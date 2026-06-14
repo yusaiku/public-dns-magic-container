@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  dns-magic:
+    build: .
+    image: dns-magic:latest
+    container_name: dns-magic
+    restart: unless-stopped
+    ports:
+      - "443:443"
+      - "853:853"
+      - "80:80"          # optional für Challenge
+      - "8453:8453"      # Prometheus Metriken
+    environment:
+      - DOMAIN=your-domain.example.com
+      - EMAIL=your-email@example.com
+      - BUNNY_API_KEY=your-bunny-dns-api-key
+    volumes:
+      - certs:/etc/nginx/ssl
+      - knot-data:/var/lib/knot-resolver
+
+volumes:
+  certs:
+  knot-data:

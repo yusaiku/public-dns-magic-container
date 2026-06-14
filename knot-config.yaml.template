@@ -1,0 +1,32 @@
+# Knot Resolver Konfiguration (YAML für v6+)
+# Direkt rekursiv zu Root-Servern + DNSSEC
+
+server:
+  listen:
+    - interface: 127.0.0.1
+      port: 53
+    - interface: ::1
+      port: 53
+
+  # DNSSEC aktivieren
+  dnssec: true
+
+  # Cache optimieren (kann über ENV erweitert werden)
+  cache:
+    size: 500M
+    # persistence: true  # optional für Persistenz
+
+modules:
+  - stats
+  - http
+  - predict   # Prefetch für bessere Performance
+
+http:
+  listen: 127.0.0.1@8453
+  tls: false
+  prometheus:
+    namespace: "kres_"
+
+# Logging (optional anpassen)
+logging:
+  level: info
