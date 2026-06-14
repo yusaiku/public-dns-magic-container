@@ -1,36 +1,63 @@
 #!/bin/bash
 set -e
 
-# Required environment variables (set these in Bunny.net or docker-compose)
-DOMAIN=${DOMAIN:?DOMAIN environment variable is required}
-EMAIL=${EMAIL:?EMAIL environment variable is required}
-BUNNY_API_KEY=${BUNNY_API_KEY:?BUNNY_API_KEY environment variable is required}
+DOMAIN=${DOMAIN:?DOMAIN is required}
+EMAIL=${EMAIL:?EMAIL is required}
+BUNNY_API_KEY=${BUNNY_API_KEY:?BUNNY_API_KEY is required}
 
-echo "==> [$(date)] Starting DNS Magic Container for domain: $DOMAIN"
+echo "==> Starting DNS Magic Container for domain: $DOMAIN"
 
-# 1. Ensure acme.sh account exists
-if [ ! -f /root/.acme.sh/account.conf ]; then
-    echo "==> Registering acme.sh account..."
-    /root/.acme.sh/acme.sh --register-account -m "$EMAIL"
-fi
+# ============================================
+# 1. Alten kaputten acme.sh Account löschen
+# ============================================
+echo "==> Cleaning old/broken acme.sh account data..."
+rm -rf /root/.acme.sh/account.conf \
+       /root/.acme.sh/ca \
+       /root/.acme.sh/*.key 2>/dev/null || true
 
-# 2. Issue or renew certificate using Bunny DNS challenge
+# ============================================
+# 2. Immer versuchen, ein Let's Encrypt Zertifikat zu holen/erneuern
+# ============================================
+echo "==> Trying to issue/renew Let's Encrypt certificate..."
+export BUNNY_API_KEY
+
+/root/.acme.sh/acme.sh --register-account -m "$EMAIL" || true
+
+# Force-Issue versuchen (acme.sh entscheidet selbst, ob erneuert werden muss)
+/root/.acme.sh/acme.sh --issue \
+    --dns dns_bunny \
+    -d "$DOMAIN" \
+    --server letsencrypt \
+    --force || echo "Warning: Let's Encrypt issuance failed (rate limit or other error)"
+
+# ============================================
+# 3. Nur selbstsigniertes Zertifikat erzeugen, wenn keines existiert
+# ============================================
 CERT_PATH="/etc/nginx/ssl/fullchain.cer"
-if [ ! -f "$CERT_PATH" ] || [ "$(find "$CERT_PATH" -mtime +60)" ]; then
-    echo "==> Issuing/Renewing Let's Encrypt certificate for $DOMAIN via Bunny DNS..."
-    export BUNNY_API_KEY
-    /root/.acme.sh/acme.sh --issue --dns dns_bunny -d "$DOMAIN" --server letsencrypt --force || true
-    /root/.acme.sh/acme.sh --install-cert -d "$DOMAIN" \
-        --key-file       /etc/nginx/ssl/privkey.pem \
-        --fullchain-file /etc/nginx/ssl/fullchain.cer \
-        --reloadcmd      "nginx -s reload || true"
+KEY_PATH="/etc/nginx/ssl/privkey.pem"
+
+if [ ! -f "$CERT_PATH" ] || [ ! -f "$KEY_PATH" ]; then
+    echo "==> No certificate found. Generating self-signed certificate as fallback..."
+    mkdir -p /etc/nginx/ssl
+
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+        -keyout "$KEY_PATH" \
+        -out "$CERT_PATH" \
+        -subj "/CN=${DOMAIN}"
+
+    echo "==> Self-signed certificate created."
+else
+    echo "==> Certificate already exists. Skipping self-signed generation."
 fi
 
-# 3. Generate configs from templates using environment variables
-echo "==> Generating Nginx and Knot configurations..."
-envsubst < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
-envsubst < /etc/knot-resolver/knot-config.yaml.template > /etc/knot-resolver/config.yaml
+# ============================================
+# 4. Konfigurationen generieren
+# ============================================
+echo "==> Generating configurations..."
+envsubst '$DOMAIN' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
-# 4. Start services with Supervisor
+# ============================================
+# 5. Dienste starten
+# ============================================
 echo "==> Starting services..."
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

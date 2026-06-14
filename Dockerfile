@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
     knot-resolver \
-    nginx \
+    nginx-extras \
     supervisor \
     curl \
     ca-certificates \
@@ -24,6 +24,7 @@ COPY knot-config.yaml.template /etc/knot-resolver/
 COPY entrypoint.sh /entrypoint.sh
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY renew-cron.sh /usr/local/bin/renew-cron.sh
+COPY knot-config.lua /etc/knot-resolver/
 
 RUN chmod +x /entrypoint.sh /usr/local/bin/renew-cron.sh
 
