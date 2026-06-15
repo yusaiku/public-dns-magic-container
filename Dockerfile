@@ -16,22 +16,21 @@ RUN apt-get update && apt-get install -y \
 RUN curl https://get.acme.sh | sh -s email=placeholder@example.com
 
 # Verzeichnisse anlegen
-RUN mkdir -p /etc/nginx/ssl /var/lib/knot-resolver /root/.acme.sh /etc/acme
+RUN mkdir -p /etc/nginx/ssl /etc/unbound /root/.acme.sh /etc/acme
 
-# Templates und Skripte kopieren
+# Dateien kopieren
 COPY nginx.conf.template /etc/nginx/
-COPY knot-config.yaml.template /etc/knot-resolver/
+COPY unbound.conf /etc/unbound/
 COPY entrypoint.sh /entrypoint.sh
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY renew-cron.sh /usr/local/bin/renew-cron.sh
-COPY knot-config.lua /etc/knot-resolver/
 
 RUN chmod +x /entrypoint.sh /usr/local/bin/renew-cron.sh
 
-# Cron für automatische Erneuerung (täglich)
+# Cron-Job für Zertifikatserneuerung
 RUN echo "0 3 * * * root /usr/local/bin/renew-cron.sh >> /var/log/acme-renew.log 2>&1" > /etc/cron.d/acme-renew && \
     chmod 0644 /etc/cron.d/acme-renew
 
-EXPOSE 80 443 853 8453
+EXPOSE 80 443 853 8953
 
 ENTRYPOINT ["/entrypoint.sh"]
