@@ -16,14 +16,13 @@ rm -rf /root/.acme.sh/account.conf \
        /root/.acme.sh/*.key 2>/dev/null || true
 
 # ============================================
-# 2. Immer versuchen, ein Let's Encrypt Zertifikat zu holen/erneuern
+# 2. Versuche Let's Encrypt Zertifikat
 # ============================================
 echo "==> Trying to issue/renew Let's Encrypt certificate..."
 export BUNNY_API_KEY
 
 /root/.acme.sh/acme.sh --register-account -m "$EMAIL" || true
 
-# Force-Issue versuchen (acme.sh entscheidet selbst, ob erneuert werden muss)
 /root/.acme.sh/acme.sh --issue \
     --dns dns_bunny \
     -d "$DOMAIN" \
@@ -31,7 +30,7 @@ export BUNNY_API_KEY
     --force || echo "Warning: Let's Encrypt issuance failed (rate limit or other error)"
 
 # ============================================
-# 3. Nur selbstsigniertes Zertifikat erzeugen, wenn keines existiert
+# 3. Fallback: Selbstsigniertes Zertifikat
 # ============================================
 CERT_PATH="/etc/nginx/ssl/fullchain.cer"
 KEY_PATH="/etc/nginx/ssl/privkey.pem"
@@ -46,8 +45,6 @@ if [ ! -f "$CERT_PATH" ] || [ ! -f "$KEY_PATH" ]; then
         -subj "/CN=${DOMAIN}"
 
     echo "==> Self-signed certificate created."
-else
-    echo "==> Certificate already exists. Skipping self-signed generation."
 fi
 
 # ============================================
@@ -55,6 +52,8 @@ fi
 # ============================================
 echo "==> Generating configurations..."
 envsubst '$DOMAIN' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
+
+# Unbound Config wird direkt verwendet (kein envsubst nötig)
 
 # ============================================
 # 5. Dienste starten
