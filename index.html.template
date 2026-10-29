@@ -184,7 +184,8 @@ footer {
 </li>
 </ol>
 <h3>DoH-Test</h3>
-<p>Einen DoH-DNS-Test kann man über das Projekt <a href="https://yusaiku.github.io/dns-tester-eu/">https://yusaiku.github.io/dns-tester-eu/</a> durchführen.</p>
+<p>Einen DoH-DNS-Test kann man hier durchführen:</p>
+<p class="code"><a href="https://yusaiku.github.io/dns-tester-eu/">https://yusaiku.github.io/dns-tester-eu/</a></p>
 <footer>Zensurfrei. Direkt an die Root-Server. Keine Abfrage-Logs.</footer>
 </main>
 </body>
