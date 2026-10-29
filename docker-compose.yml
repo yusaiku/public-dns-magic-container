@@ -1,0 +1,17 @@
+services:
+  dns-magic:
+    build: .
+    image: dns-magic:latest
+    restart: unless-stopped
+    ports:
+      - "443:443"
+      - "853:853"
+      - "8080:8080"
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN}
+      EMAIL: ${EMAIL:?set EMAIL}
+      BUNNY_API_KEY: ${BUNNY_API_KEY:?set BUNNY_API_KEY}
+      BUNNY_STORAGE_ZONE: ${BUNNY_STORAGE_ZONE:?set BUNNY_STORAGE_ZONE}
+      BUNNY_STORAGE_PASSWORD: ${BUNNY_STORAGE_PASSWORD:?set BUNNY_STORAGE_PASSWORD}
+      BUNNY_STORAGE_REGION: ${BUNNY_STORAGE_REGION:-de}
+      BUNNY_STORAGE_PREFIX: ${BUNNY_STORAGE_PREFIX:-}
