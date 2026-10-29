@@ -4,8 +4,6 @@ Ein eigener öffentlicher DNS-Resolver auf [bunny.net Magic Containers](https://
 
 Das fertige Image liegt öffentlich unter `ghcr.io/yusaiku/dns-magic:latest`. Eine eigene Domain trägst du erst beim Container ein.
 
-Wer vorher sehen will, wie die Seite aussieht, öffnet [https://dns.example.com/](https://dns.example.com/). Das ist ein Resolver, der mit diesem Image läuft.
-
 ## Was du damit bekommst
 
 - **DNS-over-HTTPS** auf Port `443`, Pfad `/dns-query`. Das nutzen Brave, Chrome und Firefox.
