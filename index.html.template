@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
-<meta name="description" content="${DOMAIN} ist ein öffentlicher DNS-Resolver über DNS-over-HTTPS und DNS-over-TLS.">
-<title>${DOMAIN} · öffentlicher DNS-Resolver</title>
+<meta name="description" content="${DOMAIN} ist ein zensurfreier öffentlicher DNS-Resolver über DNS-over-HTTPS und DNS-over-TLS. Abfragen werden nicht protokolliert.">
+<title>${DOMAIN} · zensurfreier DNS-Resolver</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%231e4d3a'/%3E%3Ccircle cx='16' cy='16' r='6' fill='none' stroke='%23f4f1ea' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%23f4f1ea'/%3E%3C/svg%3E">
 <style>
 :root {
@@ -141,10 +141,10 @@ footer {
 <circle cx="16" cy="16" r="6" fill="none" stroke="#f4f1ea" stroke-width="2"/>
 <circle cx="16" cy="16" r="2" fill="#f4f1ea"/>
 </svg>
-<p class="kicker">Öffentlicher DNS-Resolver</p>
+<p class="kicker">Zensurfreier DNS-Resolver</p>
 <h1>${DOMAIN}</h1>
-<p class="lead">Dieser Name beantwortet DNS-Anfragen über HTTPS und TLS. Die Seite selbst liefert keine DNS-Daten. Sie zeigt nur, wie der Resolver zu erreichen ist.</p>
-<p class="en">Public DNS resolver. Queries use the addresses below. They are not logged.</p>
+<p class="lead">Dieser Name beantwortet DNS-Anfragen über HTTPS und TLS, ohne Namen zu sperren. Die Seite selbst liefert keine DNS-Daten. Sie zeigt nur, wie der Resolver zu erreichen ist.</p>
+<p class="en">Public uncensored DNS resolver. Queries use the addresses below. They are not logged.</p>
 <section class="ends" aria-label="Adressen">
 <article class="card">
 <h2>DNS-over-HTTPS</h2>
@@ -157,9 +157,9 @@ footer {
 <span class="where">Port 853</span>
 </article>
 </section>
-<h3>Auflösung</h3>
-<p>Der Resolver fragt die Root-Server des DNS direkt und geht von dort zum zuständigen Nameserver. Er hängt nicht an Cloudflare, Google oder einem anderen Dienst und filtert keine Namen.</p>
-<p>DNS-Abfragen werden nicht gespeichert und nicht protokolliert. Das gilt für jeden, der den Resolver nutzt.</p>
+<h3>Zensurfrei</h3>
+<p>Der Resolver fragt die Root-Server des DNS direkt und geht von dort zum zuständigen Nameserver. Er hängt nicht an Cloudflare, Google oder dem DNS eines Zugangsproviders und sperrt keine Namen.</p>
+<p>DNS-Abfragen werden nicht gespeichert und nicht protokolliert. Antworten werden mit DNSSEC geprüft. Das gilt für jeden, der den Resolver nutzt.</p>
 <h3>Einrichten</h3>
 <ol>
 <li>
@@ -179,7 +179,7 @@ footer {
 <p class="code">dig @${DOMAIN} -p 853 +tls example.com</p>
 </li>
 </ol>
-<footer>Direkt an die Root-Server. Keine Namensfilter. Keine Abfrage-Logs.</footer>
+<footer>Zensurfrei. Direkt an die Root-Server. Keine Abfrage-Logs.</footer>
 </main>
 </body>
 </html>

@@ -1,6 +1,6 @@
-# DNS Magic Container
+# Baue deinen eigenen öffentlichen, unzensierten DNS-Resolver
 
-Ein eigener öffentlicher DNS-Resolver auf [bunny.net Magic Containers](https://bunny.net/magic-containers/). Du brauchst keinen eigenen Server. Du setzt einen Namen, und der Container beantwortet DNS-Anfragen verschlüsselt.
+Ein eigener zensurfreier DNS-Resolver auf [bunny.net Magic Containers](https://bunny.net/magic-containers/). Du brauchst keinen eigenen Server. Du setzt einen Namen, und der Container beantwortet DNS-Anfragen verschlüsselt, ohne Namen zu sperren und ohne die Abfragen mitzuschreiben.
 
 Das fertige Image liegt öffentlich unter `ghcr.io/yusaiku/dns-magic:latest`. Eine eigene Domain trägst du erst beim Container ein.
 
@@ -9,7 +9,7 @@ Das fertige Image liegt öffentlich unter `ghcr.io/yusaiku/dns-magic:latest`. Ei
 - **DNS-over-HTTPS** auf Port `443`, Pfad `/dns-query`. Das nutzen Brave, Chrome und Firefox.
 - **Eine Infoseite** auf `https://dein-name/`. Sie erklärt die beiden Adressen. DNS-Anfragen laufen nicht über diese Seite.
 - **DNS-over-TLS** auf Port `853`. Das nutzen Android („Privates DNS“) und `dig`.
-- **Direkt an die Root-Server.** Der Resolver fragt die Root-Server des DNS und danach den zuständigen Nameserver. Er leitet keine Anfrage an Cloudflare, Google oder einen anderen Resolver weiter und filtert keine Namen.
+- **Zensurfrei.** Der Resolver fragt die Root-Server des DNS und danach den zuständigen Nameserver. Er leitet keine Anfrage an Cloudflare, Google oder einen anderen Resolver weiter und sperrt keine Namen.
 - **DNSSEC.** Antworten werden geprüft.
 - **Keine Protokolle.** DNS-Abfragen werden nicht gespeichert und nicht mitgeschrieben. Das gilt für jeden, der den Resolver nutzt.
 - **Ein Zertifikat von Let's Encrypt.** Der Container legt den nötigen DNS-Eintrag selbst an und erneuert das Zertifikat.
