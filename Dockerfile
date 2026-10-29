@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         unbound-anchor \
         dns-root-data \
         nginx \
+        haproxy \
         supervisor \
         curl \
         ca-certificates \
@@ -25,15 +26,17 @@ RUN curl -fsSL https://get.acme.sh -o /tmp/acme-install.sh \
     && rm -rf /root/.acme.sh/account.conf /root/.acme.sh/ca /root/.acme.sh/*.key \
     && { crontab -r || true; }
 
-RUN mkdir -p /etc/nginx/ssl /etc/unbound /var/lib/unbound /var/lib/dns-magic /var/log/nginx /opt/dns-magic \
+RUN mkdir -p /etc/nginx/ssl /etc/unbound /var/lib/unbound /var/lib/dns-magic /var/log/nginx /var/www/dns-magic /opt/dns-magic \
     && cp /usr/share/dns/root.hints /etc/unbound/root.hints \
     && cp /usr/share/dns/root.key /var/lib/unbound/root.key \
     && unbound-anchor -a /var/lib/unbound/root.key
 
 COPY unbound.conf /opt/dns-magic/unbound.conf
 COPY nginx.conf.template /opt/dns-magic/nginx.conf.template
+COPY index.html.template /opt/dns-magic/index.html.template
 COPY unbound.conf /etc/unbound/unbound.conf
 COPY nginx.conf.template /etc/nginx/nginx.conf.template
+COPY haproxy.cfg /etc/haproxy/haproxy.cfg
 COPY entrypoint.sh /entrypoint.sh
 COPY upgrade-packages.sh /usr/local/bin/upgrade-packages.sh
 COPY sync-storage.sh /usr/local/bin/sync-storage.sh
@@ -49,7 +52,9 @@ RUN chmod 755 /entrypoint.sh /usr/local/bin/upgrade-packages.sh /usr/local/bin/s
     && unbound-checkconf /etc/unbound/unbound.conf \
     && DOMAIN=build.invalid envsubst '$DOMAIN' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf \
     && nginx -t \
-    && rm -f /etc/nginx/nginx.conf /etc/nginx/ssl/privkey.pem /etc/nginx/ssl/fullchain.cer
+    && haproxy -c -f /etc/haproxy/haproxy.cfg \
+    && DOMAIN=build.invalid envsubst '$DOMAIN' < /opt/dns-magic/index.html.template > /var/www/dns-magic/index.html \
+    && rm -f /etc/nginx/nginx.conf /etc/nginx/ssl/privkey.pem /etc/nginx/ssl/fullchain.cer /var/www/dns-magic/index.html
 
 LABEL org.opencontainers.image.source="https://github.com/yusaiku/public-dns-magic-container" \
       org.opencontainers.image.description="Public DoH and DoT resolver for bunny.net Magic Containers"

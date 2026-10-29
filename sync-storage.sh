@@ -480,6 +480,24 @@ render_nginx_from() {
     envsubst '$DOMAIN' <"$template" >"$out"
 }
 
+render_info_page() {
+    local rendered="/var/www/dns-magic/index.html"
+    local tmp
+    mkdir -p /var/www/dns-magic
+    # The entrypoint uses umask 077 for the env file. Nginx workers run as
+    # www-data and must be able to read this page.
+    chmod 755 /var/www /var/www/dns-magic
+    tmp="$(mktemp)"
+    envsubst '$DOMAIN' < /opt/dns-magic/index.html.template >"$tmp"
+    if ! cmp -s "$tmp" "$rendered"; then
+        mv "$tmp" "$rendered"
+        log "rendered the info page for ${DOMAIN}"
+    else
+        rm -f "$tmp"
+    fi
+    chmod 644 "$rendered"
+}
+
 nginx_ok() {
     local conf="$1"
     nginx -t -c "$conf" >/tmp/nginx-test.out 2>&1
@@ -618,6 +636,7 @@ probe_storage() {
 sync_all() {
     local lock_tries="$1"
     probe_storage
+    render_info_page
     restore_default_if_broken
     ensure_local_cert || true
     sync_unbound

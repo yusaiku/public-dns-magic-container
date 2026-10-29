@@ -21,7 +21,7 @@ Optional: `BUNNY_STORAGE_PREFIX`, wenn mehrere Apps dieselbe Zone nutzen. Leer h
 
 ## Updates beim Start
 
-Jeder Start des Containers, auch ein Neustart, holt zuerst die aktuellen Pakete aus Debian. Dazu gehören Unbound, Nginx, die mitinstallierten Bibliotheken und die CA-Zertifikate. Anschließend wird acme.sh aktualisiert, und Root-Hints sowie der DNSSEC-Trust-Anchor werden neu geladen. Unbound und Nginx starten erst danach, also mit den neuen Programmen.
+Jeder Start des Containers, auch ein Neustart, holt zuerst die aktuellen Pakete aus Debian. Dazu gehören Unbound, Nginx, HAProxy, die mitinstallierten Bibliotheken und die CA-Zertifikate. Anschließend wird acme.sh aktualisiert, und Root-Hints sowie der DNSSEC-Trust-Anchor werden neu geladen. Unbound, HAProxy und Nginx starten erst danach, also mit den neuen Programmen.
 
 Die Konfiguration aus der Storage Zone wird nach dem Update geladen. Eine neue Paketversion ersetzt `unbound.conf` und die Nginx-Vorlage nicht.
 
@@ -56,7 +56,11 @@ Im Magic Container:
 5. Endpunkt für DoT: Anycast, Container-Port `853`, Exposed Port `853`.
 6. Healthcheck: `http://<container>:8080/health` antwortet mit `OK`.
 
-DoH und DoT spricht Unbound direkt. DoH ist HTTP/2, deshalb liegt TLS nicht bei Nginx. Nginx bedient nur den Healthcheck. Ein CDN-Endpunkt davor puffert oder cacht DNS-Anfragen.
+Nginx beendet TLS auf Port 443. Ein Browser auf `https://DOMAIN/` sieht eine Infoseite. `POST` und `GET` auf `/dns-query` gehen als DoH an Unbound. DoT auf Port 853 spricht Unbound direkt. Ein CDN-Endpunkt davor puffert oder cacht DNS-Anfragen.
+
+Die Infoseite liegt im Image und wird beim Start mit `DOMAIN` gefüllt. Sie steht nicht in der Storage Zone.
+
+Liegt in der Zone noch eine ältere `unbound.conf`, in der Unbound selbst Port 443 belegt, gilt diese Datei weiter. Für die Infoseite muss Unbound DoH nur auf `127.0.0.1@4443` mit `http-notls-downstream: yes` anbieten, und die Nginx-Vorlage muss Port 443 selbst bedienen. HAProxy auf `127.0.0.1:4444` übersetzt das HTTP/1.1 von Nginx in das HTTP/2 von Unbound.
 
 Die Domain zeigt per A/AAAA oder CNAME auf den Endpunkt. Für das Zertifikat reicht die DNS-Zone bei bunny.net, der A-Eintrag darf später gesetzt werden.
 
@@ -74,9 +78,11 @@ export BUNNY_STORAGE_REGION=de
 docker compose up --build
 ```
 
-DoH: `curl --http2 -H 'accept: application/dns-message' 'https://DOMAIN/dns-query?name=example.com'`
+Seite: `https://DOMAIN/`
 
-DoT: `dig @DOMAIN +tls example.com`
+DoH: `curl --http2 -H 'accept: application/dns-message' 'https://DOMAIN/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB'`
+
+DoT: `dig @DOMAIN -p 853 +tls example.com`
 
 ## Grenzen
 

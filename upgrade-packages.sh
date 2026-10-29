@@ -109,7 +109,7 @@ done <"$after"
 if [[ "$changed" == "0" ]]; then
     log "unbound, nginx and the other image packages are already current"
 fi
-log "unbound $(dpkg-query -W -f '${Version}' unbound), nginx $(dpkg-query -W -f '${Version}' nginx)"
+log "unbound $(dpkg-query -W -f '${Version}' unbound), nginx $(dpkg-query -W -f '${Version}' nginx), haproxy $(dpkg-query -W -f '${Version}' haproxy)"
 
 apt-get clean
 rm -rf /var/lib/apt/lists/*

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="description" content="${DOMAIN} ist ein öffentlicher DNS-Resolver über DNS-over-HTTPS und DNS-over-TLS.">
+<title>${DOMAIN} · öffentlicher DNS-Resolver</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%231e4d3a'/%3E%3Ccircle cx='16' cy='16' r='6' fill='none' stroke='%23f4f1ea' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%23f4f1ea'/%3E%3C/svg%3E">
+<style>
+:root {
+    color-scheme: light;
+    --paper: #f4f1ea;
+    --ink: #1a1814;
+    --muted: #5e584e;
+    --line: #d8d0c3;
+    --green: #1e4d3a;
+    --card: #fbf9f4;
+}
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+body {
+    margin: 0;
+    color: var(--ink);
+    background:
+        linear-gradient(var(--green), var(--green)) top / 100% 6px no-repeat,
+        var(--paper);
+    font-family: Palatino, "Palatino Linotype", "Book Antiqua", Georgia, "Liberation Serif", serif;
+    font-size: 1.125rem;
+    line-height: 1.5;
+}
+main {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 4.5rem 1.5rem 5rem;
+}
+.mark {
+    display: block;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-bottom: 1.75rem;
+}
+p.kicker, h2, .label, .where, footer {
+    font-family: system-ui, "Segoe UI", sans-serif;
+}
+p.kicker {
+    margin: 0 0 0.75rem;
+    color: var(--green);
+    font-size: 0.75rem;
+    font-weight: 650;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+h1 {
+    margin: 0;
+    font-size: clamp(2.1rem, 5vw, 3.25rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+}
+.lead {
+    max-width: 36rem;
+    margin: 1.25rem 0 0;
+    font-size: 1.2rem;
+}
+.en {
+    margin: 0.4rem 0 0;
+    color: var(--muted);
+    font-size: 1rem;
+}
+.ends {
+    display: grid;
+    gap: 0.75rem;
+    margin: 2.5rem 0 0;
+}
+.card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 1.1rem 1.15rem 1.2rem;
+}
+h2 {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 650;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+.code {
+    display: block;
+    margin-top: 0.7rem;
+    font-family: ui-monospace, "Cascadia Code", "Source Code Pro", monospace;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    overflow-wrap: break-word;
+}
+.where {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+h3 {
+    margin: 2.75rem 0 0.25rem;
+    font-size: 1.45rem;
+    font-weight: 500;
+}
+ol {
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+li {
+    padding: 0.95rem 0;
+    border-top: 1px solid var(--line);
+}
+.label {
+    display: block;
+    margin-bottom: 0.2rem;
+    font-size: 0.95rem;
+    font-weight: 650;
+}
+li p {
+    margin: 0;
+}
+footer {
+    margin-top: 2.5rem;
+    color: var(--muted);
+    font-size: 0.92rem;
+}
+@media (max-width: 640px) {
+    main { padding-top: 3rem; }
+}
+</style>
+</head>
+<body>
+<main>
+<svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+<rect width="32" height="32" rx="4" fill="#1e4d3a"/>
+<circle cx="16" cy="16" r="6" fill="none" stroke="#f4f1ea" stroke-width="2"/>
+<circle cx="16" cy="16" r="2" fill="#f4f1ea"/>
+</svg>
+<p class="kicker">Öffentlicher DNS-Resolver</p>
+<h1>${DOMAIN}</h1>
+<p class="lead">Dieser Name beantwortet DNS-Anfragen über HTTPS und TLS. Die Seite selbst liefert keine DNS-Daten. Sie zeigt nur, wie der Resolver zu erreichen ist.</p>
+<p class="en">Public DNS resolver. Queries use the addresses below.</p>
+<section class="ends" aria-label="Adressen">
+<article class="card">
+<h2>DNS-over-HTTPS</h2>
+<span class="code">https://${DOMAIN}/dns-query</span>
+<span class="where">Port 443</span>
+</article>
+<article class="card">
+<h2>DNS-over-TLS</h2>
+<span class="code">${DOMAIN}</span>
+<span class="where">Port 853</span>
+</article>
+</section>
+<h3>Einrichten</h3>
+<ol>
+<li>
+<span class="label">Brave und Chrome</span>
+<p>Einstellungen, Datenschutz und Sicherheit, Sicherheit. Sicheres DNS verwenden, dann Benutzerdefiniert, und die DoH-Adresse eintragen.</p>
+</li>
+<li>
+<span class="label">Firefox</span>
+<p>Einstellungen, Datenschutz &amp; Sicherheit, DNS über HTTPS. Anbieter auswählen, Benutzerdefiniert, und die DoH-Adresse eintragen.</p>
+</li>
+<li>
+<span class="label">Android</span>
+<p>Einstellungen, Netzwerk und Internet, Privates DNS. Hostname des privaten DNS-Anbieters: ${DOMAIN}</p>
+</li>
+<li>
+<span class="label">dig</span>
+<p class="code">dig @${DOMAIN} -p 853 +tls example.com</p>
+</li>
+</ol>
+<footer>DNS-Abfragen werden nicht protokolliert.</footer>
+</main>
+</body>
+</html>
