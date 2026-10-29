@@ -35,7 +35,7 @@ Den Namen in dieser Anleitung, `dns.example.com`, ersetzt du durch deinen eigene
 3. Beim Registrar die Nameserver auf die Werte setzen, die Bunny anzeigt.
 4. Warten, bis die Zone bei Bunny als aktiv gilt. Ohne diesen Schritt schlägt das Zertifikat fehl.
 
-Den A-Eintrag für den Resolver legst du erst an, wenn die Anycast-Adresse aus Schritt 5 bekannt ist.
+Den A-Eintrag für den Resolver legst du erst an, wenn die App läuft und unter Endpoints die Anycast-Adresse steht.
 
 ### 2. Storage Zone ohne öffentliche Adresse
 
