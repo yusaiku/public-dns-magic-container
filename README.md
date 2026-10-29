@@ -2,7 +2,7 @@
 
 Ein eigener öffentlicher DNS-Resolver auf [bunny.net Magic Containers](https://bunny.net/magic-containers/). Du brauchst keinen eigenen Server. Du setzt einen Namen, und der Container beantwortet DNS-Anfragen verschlüsselt.
 
-Das fertige Image liegt öffentlich unter `ghcr.io/yusaiku/dns-magic:latest`. Eine eigene Domain trägst du erst beim Container ein. Im Image steckt kein Name und kein Schlüssel.
+Das fertige Image liegt öffentlich unter `ghcr.io/yusaiku/dns-magic:latest`. Eine eigene Domain trägst du erst beim Container ein.
 
 Wer vorher sehen will, wie die Seite aussieht, öffnet [https://dns.example.com/](https://dns.example.com/). Das ist ein Resolver, der mit diesem Image läuft.
 
