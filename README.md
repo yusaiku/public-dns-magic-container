@@ -9,12 +9,26 @@ Das fertige Image liegt öffentlich unter `ghcr.io/yusaiku/dns-magic:latest`. Ei
 - **DNS-over-HTTPS** auf Port `443`, Pfad `/dns-query`. Das nutzen Brave, Chrome und Firefox.
 - **Eine Infoseite** auf `https://dein-name/`. Sie erklärt die beiden Adressen. DNS-Anfragen laufen nicht über diese Seite.
 - **DNS-over-TLS** auf Port `853`. Das nutzen Android („Privates DNS“) und `dig`.
+- **Direkt an die Root-Server.** Der Resolver fragt die Root-Server des DNS und danach den zuständigen Nameserver. Er leitet keine Anfrage an Cloudflare, Google oder einen anderen Resolver weiter und filtert keine Namen.
 - **DNSSEC.** Antworten werden geprüft.
+- **Keine Protokolle.** DNS-Abfragen werden nicht gespeichert und nicht mitgeschrieben. Das gilt für jeden, der den Resolver nutzt.
 - **Ein Zertifikat von Let's Encrypt.** Der Container legt den nötigen DNS-Eintrag selbst an und erneuert das Zertifikat.
 - **Konfiguration in einer Storage Zone.** `unbound.conf` und die Nginx-Vorlage kannst du danach im Bunny-Dashboard ändern. Der Container übernimmt eine gültige Datei innerhalb von fünf Minuten.
-- **Keine DNS-Abfrage-Logs im Resolver.** Unbound schreibt weder Anfragen noch Antworten mit. Verbindungsdaten beim Anbieter können trotzdem anfallen.
+- **Grenzen gegen Missbrauch.** Ein Absender kann den Resolver nicht unbegrenzt fluten. Die Grenzen stehen unten.
 
 Magic Containers, die Anycast-Adresse und die Storage Zone sind kostenpflichtige Funktionen von bunny.net. Ein Testkonto muss eine Zahlungsart hinterlegt haben, bevor eine App startet.
+
+## Schutz vor Missbrauch
+
+Port `53` ist nur im Container offen. Von außen gibt es DNS nur über TLS, also DoH und DoT. Das Image begrenzt zusätzlich, wie viel ein Absender anfragen kann:
+
+- DoH erlaubt 20 Anfragen pro Sekunde und Adresse, ein kurzer Stoß bis 40. Darüber antwortet der Server mit HTTP `429`.
+- Die Infoseite erlaubt 10 Anfragen pro Sekunde und Adresse.
+- DoT erlaubt 8 gleichzeitige Verbindungen und 20 neue Verbindungen in 10 Sekunden pro Adresse. Eine Verbindung wird auf 64 KB pro Sekunde gebremst.
+- Unbound hält die Zahl offener Anfragen klein, lehnt den Abfragetyp ANY ab und drosselt, wenn derselbe Name zu schnell wiederholt wird.
+- Antworten enthalten keine privaten Adressen wie `192.168.0.0/16` oder `10.0.0.0/8`.
+
+Eine normale Nutzung im Browser bleibt unter diesen Grenzen.
 
 ## Was du vorher brauchst
 

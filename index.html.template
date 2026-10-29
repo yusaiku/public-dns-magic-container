@@ -144,7 +144,7 @@ footer {
 <p class="kicker">Öffentlicher DNS-Resolver</p>
 <h1>${DOMAIN}</h1>
 <p class="lead">Dieser Name beantwortet DNS-Anfragen über HTTPS und TLS. Die Seite selbst liefert keine DNS-Daten. Sie zeigt nur, wie der Resolver zu erreichen ist.</p>
-<p class="en">Public DNS resolver. Queries use the addresses below.</p>
+<p class="en">Public DNS resolver. Queries use the addresses below. They are not logged.</p>
 <section class="ends" aria-label="Adressen">
 <article class="card">
 <h2>DNS-over-HTTPS</h2>
@@ -157,6 +157,9 @@ footer {
 <span class="where">Port 853</span>
 </article>
 </section>
+<h3>Auflösung</h3>
+<p>Der Resolver fragt die Root-Server des DNS direkt und geht von dort zum zuständigen Nameserver. Er hängt nicht an Cloudflare, Google oder einem anderen Dienst und filtert keine Namen.</p>
+<p>DNS-Abfragen werden nicht gespeichert und nicht protokolliert. Das gilt für jeden, der den Resolver nutzt.</p>
 <h3>Einrichten</h3>
 <ol>
 <li>
@@ -176,7 +179,7 @@ footer {
 <p class="code">dig @${DOMAIN} -p 853 +tls example.com</p>
 </li>
 </ol>
-<footer>DNS-Abfragen werden nicht protokolliert.</footer>
+<footer>Direkt an die Root-Server. Keine Namensfilter. Keine Abfrage-Logs.</footer>
 </main>
 </body>
 </html>
