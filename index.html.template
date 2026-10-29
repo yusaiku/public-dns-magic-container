@@ -43,6 +43,10 @@ main {
 p.kicker, h2, .label, .where, footer {
     font-family: system-ui, "Segoe UI", sans-serif;
 }
+a {
+    color: var(--green);
+    overflow-wrap: anywhere;
+}
 p.kicker {
     margin: 0 0 0.75rem;
     color: var(--green);
@@ -179,6 +183,8 @@ footer {
 <p class="code">dig @${DOMAIN} -p 853 +tls example.com</p>
 </li>
 </ol>
+<h3>DoH-Test</h3>
+<p>Einen DoH-DNS-Test kann man über das Projekt <a href="https://yusaiku.github.io/dns-tester-eu/">https://yusaiku.github.io/dns-tester-eu/</a> durchführen.</p>
 <footer>Zensurfrei. Direkt an die Root-Server. Keine Abfrage-Logs.</footer>
 </main>
 </body>
