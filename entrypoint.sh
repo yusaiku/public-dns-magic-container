@@ -40,18 +40,6 @@ write_env_file() {
 }
 
 /usr/local/bin/upgrade-packages.sh || log "package upgrade stopped early, continuing with the installed versions"
-# Unbound sends upstream TCP with TCP Fast Open. On some container
-# networks that send is dropped, so a DNSKEY that does not fit in UDP
-# never arrives and the name ends as SERVFAIL. With Fast Open disabled,
-# the same send returns "operation not supported" and Unbound uses a
-# normal TCP connect.
-if [[ -e /proc/sys/net/ipv4/tcp_fastopen ]]; then
-    if printf '0\n' > /proc/sys/net/ipv4/tcp_fastopen 2>/dev/null; then
-        log "disabled TCP Fast Open"
-    else
-        log "could not disable TCP Fast Open"
-    fi
-fi
 write_env_file
 log "DNS resolver for ${DOMAIN}"
 /usr/local/bin/sync-storage.sh bootstrap

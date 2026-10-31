@@ -42,6 +42,15 @@ COPY upgrade-packages.sh /usr/local/bin/upgrade-packages.sh
 COPY sync-storage.sh /usr/local/bin/sync-storage.sh
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY dns-magic-sync /etc/cron.d/dns-magic-sync
+COPY no-fastopen.c /tmp/no-fastopen.c
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gcc libc6-dev \
+    && gcc -shared -fPIC -O2 -o /usr/local/lib/no-fastopen.so /tmp/no-fastopen.c -ldl \
+    && rm -f /tmp/no-fastopen.c \
+    && apt-get purge -y gcc libc6-dev \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN chmod 755 /entrypoint.sh /usr/local/bin/upgrade-packages.sh /usr/local/bin/sync-storage.sh \
     && chmod 644 /etc/cron.d/dns-magic-sync \
