@@ -22,7 +22,14 @@
     "list": []
   },
   "timepicker": {
-    "refresh_intervals": ["30s", "1m", "5m", "15m", "30m", "1h"]
+    "refresh_intervals": [
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h"
+    ]
   },
   "panels": [
     {
@@ -30,12 +37,23 @@
       "type": "stat",
       "title": "Queries/s",
       "description": "Beantwortete DNS-Anfragen pro Sekunde.",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 0 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
       "targets": [
         {
           "refId": "A",
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "dns_magic_queries_per_second",
           "range": true,
           "instant": false,
@@ -47,16 +65,30 @@
           "unit": "reqps",
           "decimals": 1,
           "noValue": "Keine Daten",
-          "color": { "mode": "fixed", "fixedColor": "blue" },
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
           "thresholds": {
             "mode": "absolute",
-            "steps": [{ "color": "blue", "value": null }]
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
           }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "values": false, "calcs": ["lastNotNull"], "fields": "" },
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
         "orientation": "auto",
         "textMode": "value",
         "colorMode": "background",
@@ -69,12 +101,23 @@
       "type": "stat",
       "title": "Cache hits",
       "description": "Anteil der Anfragen, die aus dem Cache kamen.",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 0 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
       "targets": [
         {
           "refId": "A",
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "dns_magic_cache_ratio",
           "range": true,
           "instant": false,
@@ -91,16 +134,31 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "red", "value": null },
-              { "color": "orange", "value": 0.15 },
-              { "color": "green", "value": 0.30 }
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 0.15
+              },
+              {
+                "color": "green",
+                "value": 0.3
+              }
             ]
           }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "values": false, "calcs": ["lastNotNull"], "fields": "" },
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
         "orientation": "auto",
         "textMode": "value",
         "colorMode": "background",
@@ -113,12 +171,23 @@
       "type": "stat",
       "title": "SERVFAIL",
       "description": "Anteil der Antworten mit dem Status SERVFAIL.",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 0 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
       "targets": [
         {
           "refId": "A",
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "dns_magic_servfail_ratio",
           "range": true,
           "instant": false,
@@ -135,16 +204,31 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "orange", "value": 0.03 },
-              { "color": "red", "value": 0.08 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 0.03
+              },
+              {
+                "color": "red",
+                "value": 0.08
+              }
             ]
           }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "values": false, "calcs": ["lastNotNull"], "fields": "" },
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
         "orientation": "auto",
         "textMode": "value",
         "colorMode": "background",
@@ -157,12 +241,23 @@
       "type": "stat",
       "title": "Slow > 1 s",
       "description": "Anteil der Anfragen, deren Auflösung länger als eine Sekunde dauerte.",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 0 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
       "targets": [
         {
           "refId": "A",
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "dns_magic_slow_ratio",
           "range": true,
           "instant": false,
@@ -179,16 +274,31 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 0.02 },
-              { "color": "red", "value": 0.05 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.02
+              },
+              {
+                "color": "red",
+                "value": 0.05
+              }
             ]
           }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "values": false, "calcs": ["lastNotNull"], "fields": "" },
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
         "orientation": "auto",
         "textMode": "value",
         "colorMode": "background",
@@ -202,19 +312,35 @@
       "title": "Länder",
       "collapsed": false,
       "panels": [],
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 }
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      }
     },
     {
       "id": 9,
       "type": "bargauge",
       "title": "Länder",
-      "description": "Antwortbytes pro Sekunde nach Land. Die Adresse und der abgefragte Name werden nicht gespeichert.",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 9 },
+      "description": "Antwortbytes pro Sekunde nach Land. Die Zeile zeigt Flagge und Landesnamen. Die Adresse und der abgefragte Name werden nicht gespeichert.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
       "targets": [
         {
           "refId": "A",
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "avg_over_time(dns_magic_country_bytes_per_second[$__range])",
           "legendFormat": "{{country}}",
           "range": false,
@@ -225,7 +351,10 @@
       "transformations": [
         {
           "id": "renameByRegex",
-          "options": { "regex": "OTHER", "renamePattern": "Andere" }
+          "options": {
+            "regex": "^OTHER$",
+            "renamePattern": "Andere"
+          }
         }
       ],
       "fieldConfig": {
@@ -234,12 +363,3033 @@
           "decimals": 0,
           "min": 0,
           "noValue": "Keine Daten",
-          "color": { "mode": "continuous-BlPu" }
+          "color": {
+            "mode": "continuous-BlPu"
+          }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AD"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇦🇩 Andorra"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AE"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇦🇪 Vereinigte Arabische Emirate"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AF"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇦🇫 Afghanistan"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AG"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇦🇬 Antigua und Barbuda"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AI"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇦🇮 Anguilla"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AL"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇦🇱 Albanien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AM"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇦🇲 Armenien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇦🇴 Angola"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AQ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇦🇶 Antarktis"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AR"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇦🇷 Argentinien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AS"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇦🇸 Amerikanisch-Samoa"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AT"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇦🇹 Österreich"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AU"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇦🇺 Australien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AW"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇦🇼 Aruba"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AX"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇦🇽 Ålandinseln"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AZ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇦🇿 Aserbaidschan"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BA"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇦 Bosnien und Herzegowina"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BB"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇧 Barbados"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BD"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇩 Bangladesch"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BE"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇪 Belgien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BF"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇫 Burkina Faso"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BG"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇬 Bulgarien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BH"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇭 Bahrain"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BI"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇮 Burundi"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BJ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇯 Benin"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BL"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇱 St. Barthélemy"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BM"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇲 Bermuda"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BN"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇳 Brunei Darussalam"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇴 Bolivien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BQ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇶 Bonaire, Sint Eustatius und Saba"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BR"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇷 Brasilien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BS"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇸 Bahamas"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BT"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇹 Bhutan"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BV"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇻 Bouvetinsel"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BW"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇼 Botsuana"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BY"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇾 Belarus"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BZ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇧🇿 Belize"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CA"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇦 Kanada"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CC"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇨 Kokosinseln"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CD"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇩 Kongo-Kinshasa"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CF"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇫 Zentralafrikanische Republik"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CG"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇬 Kongo-Brazzaville"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CH"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇭 Schweiz"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CI"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇮 Côte d’Ivoire"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CK"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇰 Cookinseln"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CL"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇱 Chile"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CM"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇲 Kamerun"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CN"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇳 China"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇴 Kolumbien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CR"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇷 Costa Rica"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CU"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇺 Kuba"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CV"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇻 Cabo Verde"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CW"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇼 Curaçao"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CX"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇽 Weihnachtsinsel"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CY"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇾 Zypern"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CZ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇨🇿 Tschechien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DE"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇩🇪 Deutschland"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DJ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇩🇯 Dschibuti"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DK"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇩🇰 Dänemark"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DM"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇩🇲 Dominica"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇩🇴 Dominikanische Republik"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DZ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇩🇿 Algerien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "EC"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇪🇨 Ecuador"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "EE"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇪🇪 Estland"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "EG"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇪🇬 Ägypten"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "EH"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇪🇭 Westsahara"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ER"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇪🇷 Eritrea"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ES"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇪🇸 Spanien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ET"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇪🇹 Äthiopien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "FI"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇫🇮 Finnland"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "FJ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇫🇯 Fidschi"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "FK"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇫🇰 Falklandinseln"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "FM"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇫🇲 Mikronesien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "FO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇫🇴 Färöer"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "FR"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇫🇷 Frankreich"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GA"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇦 Gabun"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GB"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇧 Vereinigtes Königreich"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GD"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇩 Grenada"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GE"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇪 Georgien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GF"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇫 Französisch-Guayana"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GG"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇬 Guernsey"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GH"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇭 Ghana"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GI"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇮 Gibraltar"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GL"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇱 Grönland"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GM"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇲 Gambia"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GN"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇳 Guinea"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GP"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇵 Guadeloupe"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GQ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇶 Äquatorialguinea"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GR"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇷 Griechenland"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GS"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇸 Südgeorgien und die Südlichen Sandwichinseln"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GT"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇹 Guatemala"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GU"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇺 Guam"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GW"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇼 Guinea-Bissau"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GY"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇬🇾 Guyana"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "HK"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇭🇰 Sonderverwaltungsregion Hongkong"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "HM"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇭🇲 Heard und McDonaldinseln"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "HN"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇭🇳 Honduras"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "HR"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇭🇷 Kroatien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "HT"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇭🇹 Haiti"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "HU"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇭🇺 Ungarn"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ID"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇮🇩 Indonesien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IE"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇮🇪 Irland"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IL"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇮🇱 Israel"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IM"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇮🇲 Isle of Man"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IN"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇮🇳 Indien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇮🇴 Britisches Territorium im Indischen Ozean"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IQ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇮🇶 Irak"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IR"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇮🇷 Iran"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IS"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇮🇸 Island"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IT"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇮🇹 Italien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "JE"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇯🇪 Jersey"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "JM"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇯🇲 Jamaika"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "JO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇯🇴 Jordanien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "JP"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇯🇵 Japan"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "KE"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇰🇪 Kenia"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "KG"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇰🇬 Kirgisistan"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "KH"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇰🇭 Kambodscha"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "KI"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇰🇮 Kiribati"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "KM"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇰🇲 Komoren"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "KN"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇰🇳 St. Kitts und Nevis"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "KP"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇰🇵 Nordkorea"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "KR"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇰🇷 Südkorea"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "KW"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇰🇼 Kuwait"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "KY"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇰🇾 Kaimaninseln"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "KZ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇰🇿 Kasachstan"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LA"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇱🇦 Laos"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LB"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇱🇧 Libanon"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LC"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇱🇨 St. Lucia"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LI"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇱🇮 Liechtenstein"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LK"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇱🇰 Sri Lanka"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LR"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇱🇷 Liberia"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LS"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇱🇸 Lesotho"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LT"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇱🇹 Litauen"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LU"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇱🇺 Luxemburg"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LV"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇱🇻 Lettland"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LY"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇱🇾 Libyen"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MA"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇦 Marokko"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MC"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇨 Monaco"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MD"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇩 Republik Moldau"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ME"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇪 Montenegro"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MF"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇫 St. Martin"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MG"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇬 Madagaskar"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MH"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇭 Marshallinseln"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MK"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇰 Nordmazedonien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ML"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇱 Mali"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MM"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇲 Myanmar"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MN"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇳 Mongolei"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇴 Sonderverwaltungsregion Macau"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MP"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇵 Nördliche Marianen"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MQ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇶 Martinique"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MR"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇷 Mauretanien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MS"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇸 Montserrat"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MT"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇹 Malta"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MU"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇺 Mauritius"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MV"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇻 Malediven"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MW"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇼 Malawi"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MX"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇽 Mexiko"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MY"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇾 Malaysia"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MZ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇲🇿 Mosambik"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "NA"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇳🇦 Namibia"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "NC"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇳🇨 Neukaledonien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "NE"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇳🇪 Niger"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "NF"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇳🇫 Norfolkinsel"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "NG"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇳🇬 Nigeria"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "NI"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇳🇮 Nicaragua"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "NL"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇳🇱 Niederlande"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "NO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇳🇴 Norwegen"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "NP"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇳🇵 Nepal"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "NR"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇳🇷 Nauru"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "NU"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇳🇺 Niue"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "NZ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇳🇿 Neuseeland"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "OM"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇴🇲 Oman"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PA"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇵🇦 Panama"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PE"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇵🇪 Peru"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PF"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇵🇫 Französisch-Polynesien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PG"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇵🇬 Papua-Neuguinea"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PH"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇵🇭 Philippinen"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PK"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇵🇰 Pakistan"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PL"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇵🇱 Polen"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PM"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇵🇲 St. Pierre und Miquelon"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PN"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇵🇳 Pitcairninseln"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PR"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇵🇷 Puerto Rico"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PS"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇵🇸 Palästinensische Autonomiegebiete"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PT"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇵🇹 Portugal"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PW"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇵🇼 Palau"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PY"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇵🇾 Paraguay"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "QA"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇶🇦 Katar"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "RE"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇷🇪 Réunion"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "RO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇷🇴 Rumänien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "RS"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇷🇸 Serbien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "RU"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇷🇺 Russland"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "RW"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇷🇼 Ruanda"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SA"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇦 Saudi-Arabien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SB"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇧 Salomonen"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SC"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇨 Seychellen"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SD"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇩 Sudan"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SE"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇪 Schweden"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SG"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇬 Singapur"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SH"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇭 St. Helena"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SI"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇮 Slowenien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SJ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇯 Spitzbergen und Jan Mayen"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SK"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇰 Slowakei"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SL"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇱 Sierra Leone"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SM"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇲 San Marino"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SN"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇳 Senegal"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇴 Somalia"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SR"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇷 Suriname"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SS"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇸 Südsudan"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ST"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇹 São Tomé und Príncipe"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SV"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇻 El Salvador"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SX"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇽 Sint Maarten"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SY"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇾 Syrien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SZ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇸🇿 Eswatini"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TC"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇹🇨 Turks- und Caicosinseln"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TD"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇹🇩 Tschad"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TF"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇹🇫 Französische Süd- und Antarktisgebiete"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TG"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇹🇬 Togo"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TH"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇹🇭 Thailand"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TJ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇹🇯 Tadschikistan"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TK"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇹🇰 Tokelau"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TL"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇹🇱 Timor-Leste"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TM"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇹🇲 Turkmenistan"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TN"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇹🇳 Tunesien"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇹🇴 Tonga"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TR"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇹🇷 Türkei"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TT"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇹🇹 Trinidad und Tobago"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TV"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇹🇻 Tuvalu"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TW"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇹🇼 Taiwan"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TZ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇹🇿 Tansania"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "UA"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇺🇦 Ukraine"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "UG"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇺🇬 Uganda"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "UM"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇺🇲 Amerikanische Überseeinseln"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "US"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇺🇸 Vereinigte Staaten"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "UY"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇺🇾 Uruguay"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "UZ"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇺🇿 Usbekistan"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "VA"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇻🇦 Vatikanstadt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "VC"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇻🇨 St. Vincent und die Grenadinen"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "VE"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇻🇪 Venezuela"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "VG"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇻🇬 Britische Jungferninseln"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "VI"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇻🇮 Amerikanische Jungferninseln"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "VN"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇻🇳 Vietnam"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "VU"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇻🇺 Vanuatu"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "WF"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇼🇫 Wallis und Futuna"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "WS"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇼🇸 Samoa"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "XK"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇽🇰 Kosovo"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "YE"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇾🇪 Jemen"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "YT"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇾🇹 Mayotte"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ZA"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇿🇦 Südafrika"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ZM"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇿🇲 Sambia"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ZW"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "🇿🇼 Simbabwe"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Andere"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Andere"
+              }
+            ]
+          }
+        ]
       },
       "options": {
-        "reduceOptions": { "values": false, "calcs": ["lastNotNull"], "fields": "" },
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
         "orientation": "horizontal",
         "displayMode": "gradient",
         "showUnfilled": true,
@@ -256,19 +3406,35 @@
       "title": "Latency",
       "collapsed": false,
       "panels": [],
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 }
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      }
     },
     {
       "id": 6,
       "type": "stat",
       "title": "Latency",
       "description": "Mittlere Auflösungszeit der Abfragen, die nicht im Cache lagen.",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 18 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 22
+      },
       "targets": [
         {
           "refId": "A",
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "dns_magic_latency_milliseconds",
           "range": true,
           "instant": false,
@@ -283,17 +3449,35 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 60 },
-              { "color": "orange", "value": 120 },
-              { "color": "red", "value": 250 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 60
+              },
+              {
+                "color": "orange",
+                "value": 120
+              },
+              {
+                "color": "red",
+                "value": 250
+              }
             ]
           }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "values": false, "calcs": ["lastNotNull"], "fields": "" },
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
         "orientation": "auto",
         "textMode": "value",
         "colorMode": "background",
@@ -306,10 +3490,15 @@
       "type": "text",
       "title": "",
       "transparent": true,
-      "gridPos": { "h": 5, "w": 24, "x": 0, "y": 26 },
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 30
+      },
       "options": {
         "mode": "markdown",
-        "content": "Die Antwortzeit ist die Zeit des Resolvers für Abfragen, die nicht im Cache lagen. Die Länder zeigen, wohin die Antworten gingen, in Byte pro Sekunde. Gespeichert wird nur diese Länderzahl, nicht die Adresse und nicht der abgefragte Name. Mehrere Server mit derselben Storage Zone zählen zusammen, solange die Zone erreichbar ist. Sonst gelten die Zahlen nur für diesen Server. Sperren, verworfene Anfragen und Zeiten je Protokoll werden nicht gemessen.\n\nIP Geolocation by [DB-IP](https://db-ip.com/)."
+        "content": "Die Antwortzeit ist die Zeit des Resolvers für Abfragen, die nicht im Cache lagen. Die Länder zeigen, wohin die Antworten gingen, in Byte pro Sekunde. Ein Land erscheint erst, wenn von dort in der gewählten Zeit eine Verbindung kam. Die zehn größten stehen mit Flagge und Name, der Rest als Andere. Gespeichert wird nur diese Länderzahl, nicht die Adresse und nicht der abgefragte Name. Mehrere Server mit derselben Storage Zone zählen zusammen, solange die Zone erreichbar ist. Sonst gelten die Zahlen nur für diesen Server. Sperren, verworfene Anfragen und Zeiten je Protokoll werden nicht gemessen.\n\nIP Geolocation by [DB-IP](https://db-ip.com/)."
       }
     }
   ]
