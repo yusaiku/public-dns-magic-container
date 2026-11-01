@@ -33,7 +33,7 @@ write_env_file() {
     do
         if [[ -n "${!name+x}" ]]; then
             export "$name"
-            declare -p "$name" >> /etc/dns-magic.env
+            printf 'export %s=%q\n' "$name" "${!name}" >> /etc/dns-magic.env
         fi
     done
     chmod 600 /etc/dns-magic.env

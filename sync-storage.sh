@@ -28,10 +28,18 @@ log() {
 }
 
 load_env() {
-    if [[ -f /etc/dns-magic.env ]]; then
-        # shellcheck disable=SC1091
-        source /etc/dns-magic.env
-    fi
+    local file="/etc/dns-magic.env" tmp status=0
+    [[ -f "$file" ]] || return 0
+    # The file is a list of shell assignments. `declare` inside this function
+    # would stay local and cron would not see the storage zone, so the lines
+    # are sourced as export statements.
+    tmp="$(mktemp)"
+    sed -E 's/^declare[[:space:]]+(-[A-Za-z]+[[:space:]]+)*//' "$file" \
+        | sed -E 's/^([A-Za-z_][A-Za-z0-9_]*)=/export \1=/' >"$tmp"
+    # shellcheck disable=SC1090
+    source "$tmp" || status=$?
+    rm -f "$tmp"
+    return "$status"
 }
 
 first_set() {
