@@ -75,12 +75,17 @@ http {
         }
 
         location = /stats.html {
+            return 302 /stats;
+        }
+
+        location = /stats {
             limit_req zone=web burst=20 nodelay;
             limit_conn perip 8;
             add_header X-Content-Type-Options nosniff always;
             add_header Referrer-Policy no-referrer always;
-            add_header Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'" always;
+            add_header Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" always;
             add_header Cache-Control "no-store" always;
+            try_files /stats.html =404;
         }
 
         location = /dot.mobileconfig {
@@ -98,7 +103,7 @@ http {
             limit_conn perip 8;
             add_header X-Content-Type-Options nosniff always;
             add_header Referrer-Policy no-referrer always;
-            add_header Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'; img-src data:; frame-src 'self'; base-uri 'none'; form-action 'none'" always;
+            add_header Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'" always;
             try_files $uri /index.html;
         }
     }

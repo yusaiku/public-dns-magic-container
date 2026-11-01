@@ -7,7 +7,8 @@ Das fertige Image liegt öffentlich unter `ghcr.io/yusaiku/dns-magic:latest`. Ei
 ## Was du damit bekommst
 
 - **DNS-over-HTTPS** auf Port `443`, Pfad `/dns-query`. Das nutzen Brave, Chrome und Firefox.
-- **Eine Infoseite** auf `https://dein-name/`. Sie zeigt die beiden Adressen, eine kurze Betriebsanzeige und eine Einrichtung für Android, Apple, Windows, Browser, Linux und Router. DNS-Anfragen laufen nicht über diese Seite. Die Anzeige summiert Anfragen pro Sekunde, Cache, SERVFAIL, langsame Antworten und die Antwortzeit der letzten Minuten. Die Antwortzeit gilt für Abfragen, die nicht im Cache lagen. Die Anzeige enthält keine Namen und keine Adressen von Nutzern. Mehrere Container mit derselben Storage Zone zählen zusammen.
+- **Eine Infoseite** auf `https://dein-name/`. Sie zeigt die beiden Adressen und eine Einrichtung für Android, Apple, Windows, Browser, Linux und Router. DNS-Anfragen laufen nicht über diese Seite.
+- **Eine eigene Statistikseite** auf `https://dein-name/stats`. Sie zeigt Anfragen pro Sekunde, Cache, SERVFAIL, Antworten über einer Sekunde und die Antwortzeit. Die Antwortzeit gilt für Abfragen, die nicht im Cache lagen. Die Seite enthält keine Namen und keine Adressen von Nutzern. Mehrere Container mit derselben Storage Zone zählen zusammen.
 - **DNS-over-TLS** auf Port `853`. Das nutzen Android („Privates DNS“) und `dig`.
 - **Zensurfrei.** Der Resolver fragt die Root-Server des DNS und danach den zuständigen Nameserver. Er leitet keine Anfrage an Cloudflare, Google oder einen anderen Resolver weiter und sperrt keine Namen.
 - **DNSSEC.** Antworten werden geprüft.
