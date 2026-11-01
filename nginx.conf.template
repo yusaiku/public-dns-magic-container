@@ -17,6 +17,13 @@ http {
     # DoH is one HTTP request per DNS query, so this is the per-client limit.
     limit_req_zone $binary_remote_addr zone=doh:10m rate=20r/s;
     limit_req_zone $binary_remote_addr zone=web:10m rate=10r/s;
+    # Grafana loads many files. This is looser than the info page and still bounded.
+    limit_req_zone $binary_remote_addr zone=stats:10m rate=20r/s;
+
+    map $http_upgrade $connection_upgrade {
+        default upgrade;
+        ''      close;
+    }
     limit_conn_zone $binary_remote_addr zone=perip:10m;
     limit_req_status 429;
     limit_conn_status 429;
@@ -75,17 +82,33 @@ http {
         }
 
         location = /stats.html {
-            return 302 /stats;
+            return 302 /stats/;
         }
 
         location = /stats {
-            limit_req zone=web burst=20 nodelay;
-            limit_conn perip 8;
-            add_header X-Content-Type-Options nosniff always;
-            add_header Referrer-Policy no-referrer always;
-            add_header Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" always;
-            add_header Cache-Control "no-store" always;
-            try_files /stats.html =404;
+            return 302 /stats/;
+        }
+
+        # Exact /stats/ opens the provisioned board. Everything under it is Grafana.
+        # No CSP here: Grafana needs its own scripts and styles. The info page stays strict.
+        location = /stats/ {
+            return 302 /stats/d/dns-magic/doh-dot?orgId=1&refresh=1m&from=now-12h&to=now;
+        }
+
+        location /stats/ {
+            limit_req zone=stats burst=60 nodelay;
+            proxy_pass http://127.0.0.1:3000;
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto https;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection $connection_upgrade;
+            proxy_connect_timeout 5s;
+            proxy_read_timeout 60s;
+            proxy_send_timeout 60s;
+            proxy_redirect off;
         }
 
         location = /dot.mobileconfig {
@@ -115,6 +138,23 @@ http {
         location /health {
             default_type text/plain;
             return 200 "OK\n";
+        }
+    }
+
+    # Prometheus scrapes this. It is not reachable from outside the container.
+    server {
+        listen 127.0.0.1:9100;
+        server_name _;
+        access_log off;
+
+        location = /metrics {
+            alias /var/lib/dns-magic/stats/metrics.prom;
+            default_type text/plain;
+            add_header Cache-Control "no-store";
+        }
+
+        location / {
+            return 404;
         }
     }
 }

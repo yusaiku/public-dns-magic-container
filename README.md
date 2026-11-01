@@ -8,7 +8,7 @@ Das fertige Image liegt öffentlich unter `ghcr.io/yusaiku/dns-magic:latest`. Ei
 
 - **DNS-over-HTTPS** auf Port `443`, Pfad `/dns-query`. Das nutzen Brave, Chrome und Firefox.
 - **Eine Infoseite** auf `https://dein-name/`. Sie zeigt die beiden Adressen und eine Einrichtung für Android, Apple, Windows, Browser, Linux und Router. DNS-Anfragen laufen nicht über diese Seite.
-- **Eine eigene Statistikseite** auf `https://dein-name/stats`. Sie zeigt Anfragen pro Sekunde, Cache, SERVFAIL, Antworten über einer Sekunde und die Antwortzeit. Die Antwortzeit gilt für Abfragen, die nicht im Cache lagen. Die Seite enthält keine Namen und keine Adressen von Nutzern. Mehrere Container mit derselben Storage Zone zählen zusammen.
+- **Grafana** auf `https://dein-name/stats/`. Die vorbereitete Tafel zeigt Anfragen pro Sekunde, Cache-Treffer, SERVFAIL, Antworten über einer Sekunde und die Antwortzeit. Die Antwortzeit gilt für Abfragen, die nicht im Cache lagen. Besucher müssen sich nicht anmelden. Die Tafel enthält keine Namen und keine Adressen von Nutzern. Mehrere Container mit derselben Storage Zone zählen zusammen, solange die Zone erreichbar ist. Sonst zeigt Grafana nur diesen Container. Sperren, verworfene Anfragen und Zeiten je Protokoll stehen nicht darauf, weil dieser Resolver sie nicht misst. Das Admin-Passwort erzeugt der Container beim Start. Es liegt nicht im Image.
 - **DNS-over-TLS** auf Port `853`. Das nutzen Android („Privates DNS“) und `dig`.
 - **Zensurfrei.** Der Resolver fragt die Root-Server des DNS und danach den zuständigen Nameserver. Er leitet keine Anfrage an Cloudflare, Google oder einen anderen Resolver weiter und sperrt keine Namen.
 - **DNSSEC.** Antworten werden geprüft.
@@ -25,6 +25,7 @@ Port `53` ist nur im Container offen. Von außen gibt es DNS nur über TLS, also
 
 - DoH erlaubt 20 Anfragen pro Sekunde und Adresse, ein kurzer Stoß bis 40. Darüber antwortet der Server mit HTTP `429`.
 - Die Infoseite erlaubt 10 Anfragen pro Sekunde und Adresse.
+- Die Grafana-Tafel unter `/stats/` erlaubt 20 Anfragen pro Sekunde und Adresse, mit einem kurzen Stoß darüber, weil die Seite viele Dateien lädt.
 - DoT erlaubt 8 gleichzeitige Verbindungen und 20 neue Verbindungen in 10 Sekunden pro Adresse. Eine Verbindung wird auf 64 KB pro Sekunde gebremst.
 - Unbound hält die Zahl offener Anfragen klein, lehnt den Abfragetyp ANY ab und drosselt, wenn derselbe Name zu schnell wiederholt wird.
 - Antworten enthalten keine privaten Adressen wie `192.168.0.0/16` oder `10.0.0.0/8`.

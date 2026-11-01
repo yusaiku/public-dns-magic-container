@@ -1,0 +1,12 @@
+apiVersion: 1
+
+providers:
+  - name: dns-magic
+    orgId: 1
+    folder: ""
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 60
+    allowUiUpdates: false
+    options:
+      path: /opt/dns-magic/grafana/dashboards

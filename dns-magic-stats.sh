@@ -1,5 +1,5 @@
 #!/bin/bash
-# Separate public stats page: the top counters through latency.
+# Feed Grafana the public counters through latency.
 # Counters only. No names, no client addresses, no block list.
 set -euo pipefail
 export LC_ALL=C
@@ -8,174 +8,60 @@ export LC_ALL=C
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/sync-storage.sh"
 
 STATEDIR="${DNS_MAGIC_STATS_STATE:-/var/lib/dns-magic/stats}"
-WEB="${DNS_MAGIC_STATS_WEB:-/var/www/dns-magic/stats.html}"
-SERIES="${STATEDIR}/series"
+METRICS="${STATEDIR}/metrics.prom"
 WINDOW=300
 MIN_SPAN=60
 FRESH=180
-HISTORY=$((12 * 3600))
 
-fmt_num() {
-    awk -v v="$1" -v d="$2" 'BEGIN { if (v < 0) v = 0; printf "%.*f", d, v }'
-}
-
-esc() {
-    printf '%s' "$1" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g'
-}
-
-# Column: 2 qps, 3 cache %, 4 SERVFAIL %, 5 slow %, 6 latency ms. -1 is a gap.
-sparkline() {
-    local col="$1"
-    [[ -s "$SERIES" ]] || return 0
-    awk -v col="$col" '
-        $col ~ /^-?[0-9.]+$/ && $col + 0 >= 0 { n++; v[n] = $col + 0 }
-        END {
-            if (n < 2) exit
-            min = max = v[1]
-            for (i = 1; i <= n; i++) {
-                if (v[i] < min) min = v[i]
-                if (v[i] > max) max = v[i]
-            }
-            if (max == min) max = min + 1
-            printf "<svg viewBox=\"0 0 100 28\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><path d=\"M0,28 "
-            for (i = 1; i <= n; i++) {
-                x = (i - 1) * 100 / (n - 1)
-                y = 26 - (v[i] - min) / (max - min) * 24
-                printf "L%.2f,%.2f ", x, y
-            }
-            printf "L100,28 Z\"/></svg>"
-        }
-    ' "$SERIES"
-}
-
-range_label() {
-    [[ -s "$SERIES" ]] || { printf '%s' "Last minute"; return; }
-    awk '
-        $1 ~ /^[0-9]+$/ { if (a == "") a = $1; b = $1 }
-        END {
-            d = b - a
-            if (d >= 11 * 3600) print "Last 12 hours"
-            else if (d >= 50 * 60) print "Last hour"
-            else if (d >= 4 * 60) print "Last minutes"
-            else print "Last minute"
-        }
-    ' "$SERIES"
-}
-
-append_history() {
-    local now="$1" qps="$2" cache="$3" servfail="$4" slow="$5" latency="$6" tmp
-    mkdir -p "$STATEDIR"
-    tmp="$(mktemp)"
-    [[ -f "$SERIES" ]] && cat "$SERIES" >>"$tmp" || true
-    printf '%s %.6f %.4f %.4f %.4f %.4f\n' "$now" "$qps" "$cache" "$servfail" "$slow" "$latency" >>"$tmp"
-    awk -v now="$now" -v keep="$HISTORY" '$1 ~ /^[0-9]+$/ && now - $1 <= keep { print }' "$tmp" >"$SERIES"
-    rm -f "$tmp"
-    chmod 600 "$SERIES" || true
-}
-
-panel() {
-    local title="$1" value="$2" color="$3" col="$4" ink="" svg
-    [[ "$color" == "#fade2a" ]] && ink=" ink"
-    svg="$(sparkline "$col")"
-    cat <<EOF
-<article class="panel${ink}" style="background:${color}"><h2>${title}</h2><p class="value">${value}</p>${svg}</article>
-EOF
-}
-
-tone() {
-    # tone kind raw. kind is cache, bad (servfail/slow), or latency. -1 is empty.
-    awk -v kind="$1" -v v="$2" 'BEGIN {
-        if (v < 0) { print "#181b1f"; exit }
-        if (kind == "cache") {
-            if (v < 15) print "#e02f44"; else if (v < 30) print "#ff9830"; else print "#73bf69"
-        } else if (kind == "servfail") {
-            if (v < 3) print "#73bf69"; else if (v < 8) print "#ff9830"; else print "#e02f44"
-        } else if (kind == "slow") {
-            if (v < 2) print "#73bf69"; else if (v < 5) print "#ff9830"; else print "#e02f44"
-        } else {
-            if (v < 60) print "#73bf69"; else if (v < 120) print "#fade2a"; else if (v < 250) print "#ff9830"; else print "#e02f44"
-        }
+# Print a non-negative number, or fail.
+prom_num() {
+    awk -v v="$1" 'BEGIN {
+        if (v !~ /^-?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?$/) exit 1
+        if (v + 0 < 0) exit 1
+        printf "%.6f", v + 0
     }'
 }
 
-show_num() {
-    local v="$1" digits="$2"
-    awk -v v="$v" 'BEGIN { exit !(v < 0) }' && { printf '%s' "–"; return; }
-    fmt_num "$v" "$digits"
+gauge() {
+    local name="$1" value="$2" tmp
+    tmp="$(prom_num "$value")" || return 1
+    printf '# TYPE %s gauge\n%s %s\n' "$name" "$name" "$tmp"
 }
 
-write_page() {
-    local note="$1" qps="$2" cache="$3" servfail="$4" slow="$5" latency="$6"
-    local tmp host qps_s cache_s serv_s slow_s lat_s
-    mkdir -p "$(dirname "$WEB")" "$STATEDIR"
-    host="$(esc "${DOMAIN:-}")"
-    [[ -n "$host" ]] && host="${host} · "
-    qps_s="$(show_num "$qps" "$(awk -v v="$qps" 'BEGIN { print (v >= 0 && v < 10) ? 1 : 0 }')")"
-    cache_s="$(show_num "$cache" 1)"; [[ "$cache_s" != "–" ]] && cache_s="${cache_s}%"
-    serv_s="$(show_num "$servfail" 2)"; [[ "$serv_s" != "–" ]] && serv_s="${serv_s}%"
-    slow_s="$(show_num "$slow" 2)"; [[ "$slow_s" != "–" ]] && slow_s="${slow_s}%"
-    lat_s="$(show_num "$latency" "$(awk -v v="$latency" 'BEGIN { print (v >= 0 && v < 10) ? 1 : 0 }')")"
-    [[ "$lat_s" != "–" ]] && lat_s="${lat_s} ms"
-    tmp="$(mktemp)"
+write_metrics() {
+    # qps, cache percent, servfail percent, slow percent, latency ms, combined 0/1.
+    # A negative percent or latency is left out so Grafana shows no data.
+    local qps="$1" cache="$2" servfail="$3" slow="$4" latency="$5" combined="$6" tmp
+    mkdir -p "$STATEDIR"
+    find "$STATEDIR" -name '.metrics.*' -delete 2>/dev/null || true
+    tmp="$(mktemp "${STATEDIR}/.metrics.XXXXXX")"
     {
-        cat <<EOF
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="60">
-<title>DoH / DoT</title>
-<style>
-html, body { margin: 0; background: #111217; color: #d8d9da; }
-body { font-family: Inter, Roboto, "Helvetica Neue", Arial, sans-serif; }
-.bar { display: flex; align-items: center; gap: 1rem; height: 3rem; padding: 0 1rem; border-bottom: 1px solid #2c3235; }
-.bar h1 { margin: 0; font-size: 1rem; font-weight: 500; }
-.bar .meta { margin-left: auto; color: #8e8ea0; font-size: 0.82rem; }
-.wrap { padding: 0.7rem 0.75rem 1.2rem; }
-.grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; }
-.row { margin: 0.85rem 0 0.45rem; font-size: 0.9rem; font-weight: 500; color: #d8d9da; }
-.panel { position: relative; min-height: 7.6rem; overflow: hidden; border-radius: 2px; padding: 0.45rem 0.6rem 1.7rem; color: #fff; }
-.panel h2 { margin: 0; font-size: 0.86rem; font-weight: 500; color: rgba(255,255,255,.9); }
-.panel .value { margin: 0.85rem 0 0; text-align: center; font-size: 2rem; font-weight: 500; line-height: 1; }
-.panel svg { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 1.7rem; }
-.panel svg path { fill: rgba(255,255,255,.32); }
-.panel.ink, .panel.ink h2 { color: #1f1f1f; }
-.panel.ink svg path { fill: rgba(0,0,0,.22); }
-.note { margin: 0.8rem 0.15rem 0; color: #8e8ea0; font-size: 0.78rem; line-height: 1.4; }
-@media (max-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } .panel .value { font-size: 1.7rem; } }
-@media (max-width: 560px) { .grid { grid-template-columns: 1fr; } .bar { height: auto; padding: 0.7rem 1rem; } .bar .meta { margin-left: 0; } }
-</style>
-</head>
-<body>
-<header class="bar"><h1>DoH / DoT</h1><p class="meta">${host}$(esc "$(range_label)")</p></header>
-<main class="wrap">
-<div class="grid">
-EOF
-        panel "Queries/s" "$qps_s" "#3274d9" 2
-        panel "Cache hits" "$cache_s" "$(tone cache "$cache")" 3
-        panel "SERVFAIL" "$serv_s" "$(tone servfail "$servfail")" 4
-        panel "Slow &gt; 1 s" "$slow_s" "$(tone slow "$slow")" 5
-        cat <<EOF
-</div>
-<h2 class="row">Latency</h2>
-<div class="grid">
-EOF
-        panel "Latency" "$lat_s" "$(tone latency "$latency")" 6
-        cat <<EOF
-</div>
-<p class="note">$(esc "$note")</p>
-</main>
-</body>
-</html>
-EOF
+        gauge dns_magic_queries_per_second "$qps"
+        if awk -v v="$cache" 'BEGIN { exit !(v >= 0) }'; then
+            gauge dns_magic_cache_ratio "$(awk -v v="$cache" 'BEGIN { print v / 100 }')"
+        fi
+        if awk -v v="$servfail" 'BEGIN { exit !(v >= 0) }'; then
+            gauge dns_magic_servfail_ratio "$(awk -v v="$servfail" 'BEGIN { print v / 100 }')"
+        fi
+        if awk -v v="$slow" 'BEGIN { exit !(v >= 0) }'; then
+            gauge dns_magic_slow_ratio "$(awk -v v="$slow" 'BEGIN { print v / 100 }')"
+        fi
+        if awk -v v="$latency" 'BEGIN { exit !(v >= 0) }'; then
+            gauge dns_magic_latency_milliseconds "$latency"
+        fi
+        gauge dns_magic_combined "$combined"
     } >"$tmp"
     chmod 644 "$tmp"
-    mv "$tmp" "$WEB"
+    mv "$tmp" "$METRICS"
 }
 
-write_waiting() {
-    write_page "The first reading appears in about a minute." -1 -1 -1 -1 -1
+clear_metrics() {
+    local tmp
+    mkdir -p "$STATEDIR"
+    tmp="$(mktemp "${STATEDIR}/.metrics.XXXXXX")"
+    printf '%s\n' '# dns-magic: no sample' >"$tmp"
+    chmod 644 "$tmp"
+    mv "$tmp" "$METRICS"
 }
 
 # Two unbound stats dumps and the seconds between them. Prints one JSON
@@ -279,8 +165,8 @@ collect_window() {
 }
 
 render_from_json() {
-    local json="$1" note="$2"
-    local qps cache servfail slow latency answers hits lookups sum sfail nslow now
+    local json="$1" combined="$2"
+    local qps cache servfail slow latency answers hits lookups sum sfail nslow
     answers="$(jq -r '.answers' <<<"$json")"
     hits="$(jq -r '.hits' <<<"$json")"
     qps="$(jq -r '.qps' <<<"$json")"
@@ -298,13 +184,11 @@ render_from_json() {
         slow=-1
     fi
     if [[ "$lookups" -gt 0 ]]; then
-        latency="$(awk -v s="$sum" -v n="$lookups" 'BEGIN { print s / n }')"
+        latency="$(awk -v s="$sum" -v n="$lookups" 'BEGIN { printf "%.6f", s / n }')"
     else
         latency=-1
     fi
-    now="$(date +%s)"
-    append_history "$now" "$qps" "$cache" "$servfail" "$slow" "$latency"
-    write_page "$note" "$qps" "$cache" "$servfail" "$slow" "$latency"
+    write_metrics "$qps" "$cache" "$servfail" "$slow" "$latency" "$combined"
 }
 
 instance_id() {
@@ -382,52 +266,40 @@ merge_instances() {
 }
 
 main_stats() {
-    local json stamped note oldest newest merged stampfile
-    mkdir -p "$STATEDIR" "$(dirname "$WEB")"
-    chmod 755 "$STATEDIR" "$(dirname "$WEB")" || true
+    local json stamped oldest newest merged stampfile combined=0
+    mkdir -p "$STATEDIR"
+    chmod 755 "$STATEDIR" || true
     load_env || true
     exec 8>"$STATEDIR/run.lock"
     flock -n 8 || return 0
     if ! json="$(collect_window)"; then
         newest="$(find "$STATEDIR" -name 's-*' -printf '%f\n' 2>/dev/null | sed 's/^s-//' | sort -n | tail -1)"
-        if [[ ! -s "$WEB" || ! "$newest" =~ ^[0-9]+$ || $(( $(date +%s) - newest )) -gt $FRESH ]]; then
-            write_waiting
+        if [[ ! -s "$METRICS" || ! "$newest" =~ ^[0-9]+$ || $(( $(date +%s) - newest )) -gt $FRESH ]]; then
+            clear_metrics
         fi
         return 0
     fi
     stamped="$(jq -c --argjson t "$(date +%s)" '. + {t:$t}' <<<"$json")"
-    newest="$(date +%s)"
-    oldest="$(find "$STATEDIR" -name 's-*' -printf '%f\n' | sed 's/^s-//' | sort -n | head -1)"
-    if [[ "$oldest" =~ ^[0-9]+$ && $((newest - oldest)) -ge $((WINDOW - 30)) ]]; then
-        note="Last five minutes. Latency is the resolver time without cache."
-    else
-        note="Last minute. Latency is the resolver time without cache."
-    fi
     stampfile="$(mktemp)"
     printf '%s\n' "$stamped" >"$stampfile"
-    if load_env && resolve_storage quiet; then
-        if merged="$(merge_instances "$stampfile")"; then
-            json="$merged"
-        else
-            json="$stamped"
-            note="${note} This server only."
-        fi
+    if load_env && resolve_storage quiet && merged="$(merge_instances "$stampfile")"; then
+        json="$merged"
+        combined=1
     else
         json="$stamped"
-        note="${note} This server only."
+        combined=0
     fi
     rm -f "$stampfile"
-    render_from_json "$json" "$note"
+    render_from_json "$json" "$combined"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
     case "${1:-}" in
         diff) diff_dumps "$2" "$3" "$4" ;;
         render)
-            WEB="$2"
-            render_from_json "$(cat "$3")" "$4"
+            render_from_json "$(cat "$2")" "$3"
             ;;
         "") main_stats ;;
-        *) printf 'usage: dns-magic-stats.sh [diff older newer span | render web json note]\n' >&2; exit 1 ;;
+        *) printf 'usage: dns-magic-stats.sh [diff older newer span | render json combined]\n' >&2; exit 1 ;;
     esac
 fi

@@ -32,6 +32,22 @@ RUN mkdir -p /etc/nginx/ssl /etc/unbound /var/lib/unbound /var/lib/dns-magic /va
     && cp /usr/share/dns/root.key /var/lib/unbound/root.key \
     && unbound-anchor -a /var/lib/unbound/root.key
 
+# Grafana OSS and Prometheus stay on the versions from this build.
+# The Grafana apt source is removed so a later Debian upgrade does not
+# depend on apt.grafana.com. Holds stop apt from floating either package.
+RUN mkdir -p /etc/apt/keyrings \
+    && curl -fsSL https://apt.grafana.com/gpg-full.key -o /etc/apt/keyrings/grafana.asc \
+    && chmod 644 /etc/apt/keyrings/grafana.asc \
+    && printf '%s\n' 'deb [signed-by=/etc/apt/keyrings/grafana.asc] https://apt.grafana.com stable main' > /etc/apt/sources.list.d/grafana.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends grafana prometheus \
+    && apt-mark hold grafana prometheus \
+    && rm -f /etc/apt/sources.list.d/grafana.list /etc/apt/keyrings/grafana.asc \
+    && rm -rf /var/lib/apt/lists/* \
+    && command -v grafana-server \
+    && command -v prometheus \
+    && test ! -e /etc/apt/sources.list.d/grafana.list
+
 COPY unbound.conf /opt/dns-magic/unbound.conf
 COPY nginx.conf.template /opt/dns-magic/nginx.conf.template
 COPY index.html.template /opt/dns-magic/index.html.template
@@ -46,6 +62,10 @@ COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY dns-magic-sync /etc/cron.d/dns-magic-sync
 COPY dns-magic-stats.sh /usr/local/bin/dns-magic-stats.sh
 COPY dns-magic-stats.cron /etc/cron.d/dns-magic-stats
+COPY dns-magic-grafana.sh /usr/local/bin/dns-magic-grafana.sh
+COPY dns-magic-prometheus.sh /usr/local/bin/dns-magic-prometheus.sh
+COPY prometheus.yml /opt/dns-magic/prometheus.yml
+COPY grafana /opt/dns-magic/grafana
 COPY no-fastopen.c /tmp/no-fastopen.c
 
 RUN apt-get update \
@@ -56,7 +76,8 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
-RUN chmod 755 /entrypoint.sh /usr/local/bin/upgrade-packages.sh /usr/local/bin/sync-storage.sh /usr/local/bin/dns-magic-stats.sh \
+RUN chmod 755 /entrypoint.sh /usr/local/bin/upgrade-packages.sh /usr/local/bin/sync-storage.sh \
+        /usr/local/bin/dns-magic-stats.sh /usr/local/bin/dns-magic-grafana.sh /usr/local/bin/dns-magic-prometheus.sh \
     && chmod 644 /etc/cron.d/dns-magic-sync /etc/cron.d/dns-magic-stats \
     && openssl req -x509 -nodes -days 1 -newkey rsa:2048 \
         -keyout /etc/nginx/ssl/privkey.pem \
@@ -68,7 +89,15 @@ RUN chmod 755 /entrypoint.sh /usr/local/bin/upgrade-packages.sh /usr/local/bin/s
     && haproxy -c -f /etc/haproxy/haproxy.cfg \
     && bash -n /usr/local/bin/dns-magic-stats.sh \
     && bash -n /usr/local/bin/sync-storage.sh \
+    && bash -n /usr/local/bin/dns-magic-grafana.sh \
+    && bash -n /usr/local/bin/dns-magic-prometheus.sh \
     && command -v gawk >/dev/null \
+    && command -v grafana-server >/dev/null \
+    && command -v prometheus >/dev/null \
+    && grep -q 'proxy_pass http://127.0.0.1:3000' /etc/nginx/nginx.conf \
+    && grep -q '127.0.0.1:9100' /etc/nginx/nginx.conf \
+    && ! grep -q frame-ancestors /etc/nginx/nginx.conf \
+    && jq -e '.uid == "dns-magic" and (([.panels[].targets[]?.expr] | index("dns_magic_latency_milliseconds")) != null)' /opt/dns-magic/grafana/dashboards/doh-dot.json >/dev/null \
     && DOMAIN=build.invalid envsubst '$DOMAIN' < /opt/dns-magic/index.html.template > /var/www/dns-magic/index.html \
     && DOMAIN=build.invalid envsubst '$DOMAIN' < /opt/dns-magic/doh.mobileconfig.template > /var/www/dns-magic/doh.mobileconfig \
     && DOMAIN=build.invalid envsubst '$DOMAIN' < /opt/dns-magic/dot.mobileconfig.template > /var/www/dns-magic/dot.mobileconfig \

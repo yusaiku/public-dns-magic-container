@@ -43,6 +43,6 @@ write_env_file() {
 write_env_file
 log "DNS resolver for ${DOMAIN}"
 /usr/local/bin/sync-storage.sh bootstrap
-/usr/local/bin/dns-magic-stats.sh || log "stats page will appear after the first measurement"
-log "Starting unbound, haproxy, nginx and the storage sync"
+/usr/local/bin/dns-magic-stats.sh || log "Grafana will show numbers after the first measurement"
+log "Starting unbound, haproxy, nginx, Prometheus, Grafana and the storage sync"
 exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
