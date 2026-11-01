@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
-<meta name="description" content="${DOMAIN} ist ein zensurfreier öffentlicher DNS-Resolver über DNS-over-HTTPS und DNS-over-TLS. Abfragen werden nicht protokolliert.">
+<meta name="description" content="${DOMAIN} ist ein zensurfreier öffentlicher DNS-Resolver über DNS-over-HTTPS und DNS-over-TLS. Die Seite zeigt die Einrichtung für diesen Namen.">
 <title>${DOMAIN} · zensurfreier DNS-Resolver</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%231e4d3a'/%3E%3Ccircle cx='16' cy='16' r='6' fill='none' stroke='%23f4f1ea' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%23f4f1ea'/%3E%3C/svg%3E">
 <style>
@@ -30,7 +30,7 @@ body {
     line-height: 1.5;
 }
 main {
-    max-width: 42rem;
+    max-width: 46rem;
     margin: 0 auto;
     padding: 4.5rem 1.5rem 5rem;
 }
@@ -40,13 +40,10 @@ main {
     height: 2.25rem;
     margin-bottom: 1.75rem;
 }
-p.kicker, h2, .label, .where, footer {
+p.kicker, h2, .label, .where, .tabbar, .steps, footer, .choice small {
     font-family: system-ui, "Segoe UI", sans-serif;
 }
-a {
-    color: var(--green);
-    overflow-wrap: anywhere;
-}
+a { color: var(--green); overflow-wrap: anywhere; }
 p.kicker {
     margin: 0 0 0.75rem;
     color: var(--green);
@@ -61,28 +58,24 @@ h1 {
     font-weight: 500;
     letter-spacing: -0.03em;
     line-height: 1.05;
+    overflow-wrap: anywhere;
 }
-.lead {
-    max-width: 36rem;
-    margin: 1.25rem 0 0;
-    font-size: 1.2rem;
-}
-.en {
-    margin: 0.4rem 0 0;
-    color: var(--muted);
-    font-size: 1rem;
-}
+.lead { max-width: 38rem; margin: 1.25rem 0 0; font-size: 1.2rem; }
+.en { margin: 0.4rem 0 0; color: var(--muted); font-size: 1rem; }
 .ends {
     display: grid;
     gap: 0.75rem;
     margin: 2.5rem 0 0;
 }
-.card {
+@media (min-width: 700px) {
+    .ends { grid-template-columns: 1fr 1fr; }
+}
+.card, .note, .choice {
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 2px;
-    padding: 1.1rem 1.15rem 1.2rem;
 }
+.card { padding: 1.1rem 1.15rem 1.2rem; }
 h2 {
     margin: 0;
     color: var(--muted);
@@ -91,13 +84,18 @@ h2 {
     letter-spacing: 0.12em;
     text-transform: uppercase;
 }
-.code {
+pre.code, span.code {
     display: block;
-    margin-top: 0.7rem;
+    margin: 0.7rem 0 0;
     font-family: ui-monospace, "Cascadia Code", "Source Code Pro", monospace;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     line-height: 1.45;
     overflow-wrap: break-word;
+    white-space: pre-wrap;
+}
+code.inline {
+    font-family: ui-monospace, "Cascadia Code", "Source Code Pro", monospace;
+    font-size: 0.92em;
 }
 .where {
     display: block;
@@ -110,23 +108,115 @@ h3 {
     font-size: 1.45rem;
     font-weight: 500;
 }
-ol {
-    margin: 1rem 0 0;
+.panel h3 { margin: 1.6rem 0 0.35rem; font-size: 1.28rem; }
+.panel h3:first-child { margin-top: 0; }
+.guide { margin-top: 1.15rem; }
+.guide > input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+.tabbar {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--line);
+}
+.tabbar label {
+    flex: 0 0 auto;
+    padding: 0.55rem 0.8rem;
+    color: var(--muted);
+    font-size: 0.92rem;
+    font-weight: 650;
+    cursor: pointer;
+}
+.panel { display: none; padding-top: 1.15rem; }
+#setup-android:checked ~ .tabbar label[for="setup-android"],
+#setup-apple:checked ~ .tabbar label[for="setup-apple"],
+#setup-windows:checked ~ .tabbar label[for="setup-windows"],
+#setup-browser:checked ~ .tabbar label[for="setup-browser"],
+#setup-linux:checked ~ .tabbar label[for="setup-linux"],
+#setup-router:checked ~ .tabbar label[for="setup-router"],
+#setup-forward:checked ~ .tabbar label[for="setup-forward"] {
+    color: var(--ink);
+    box-shadow: inset 0 -2px 0 var(--green);
+}
+#setup-android:focus-visible ~ .tabbar label[for="setup-android"],
+#setup-apple:focus-visible ~ .tabbar label[for="setup-apple"],
+#setup-windows:focus-visible ~ .tabbar label[for="setup-windows"],
+#setup-browser:focus-visible ~ .tabbar label[for="setup-browser"],
+#setup-linux:focus-visible ~ .tabbar label[for="setup-linux"],
+#setup-router:focus-visible ~ .tabbar label[for="setup-router"],
+#setup-forward:focus-visible ~ .tabbar label[for="setup-forward"] {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+#setup-android:checked ~ #panel-android,
+#setup-apple:checked ~ #panel-apple,
+#setup-windows:checked ~ #panel-windows,
+#setup-browser:checked ~ #panel-browser,
+#setup-linux:checked ~ #panel-linux,
+#setup-router:checked ~ #panel-router,
+#setup-forward:checked ~ #panel-forward { display: block; }
+ol.steps {
+    margin: 0.4rem 0 0;
     padding: 0;
     list-style: none;
+    counter-reset: step;
 }
-li {
-    padding: 0.95rem 0;
+ol.steps li {
+    display: grid;
+    grid-template-columns: 1.75rem 1fr;
+    gap: 0.7rem;
+    padding: 0.9rem 0;
     border-top: 1px solid var(--line);
+    counter-increment: step;
 }
-.label {
-    display: block;
-    margin-bottom: 0.2rem;
-    font-size: 0.95rem;
+ol.steps li::before {
+    content: counter(step);
+    color: var(--green);
     font-weight: 650;
+    padding-top: 0.12rem;
 }
-li p {
-    margin: 0;
+.label { display: block; margin-bottom: 0.2rem; font-size: 0.95rem; font-weight: 650; }
+.steps li p, .panel > p { margin: 0.35rem 0 0; }
+.note {
+    margin: 1rem 0 0;
+    padding: 0.8rem 0.95rem;
+    border-left: 3px solid var(--green);
+    font-size: 1rem;
+}
+.choices {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0.3rem 0 0.2rem;
+}
+@media (min-width: 700px) {
+    .choices { grid-template-columns: 1fr 1fr; }
+}
+a.choice {
+    display: block;
+    padding: 1rem 1.05rem 1.05rem;
+    color: inherit;
+    text-decoration: none;
+}
+a.choice strong {
+    display: block;
+    color: var(--green);
+    font-family: system-ui, "Segoe UI", sans-serif;
+    font-size: 0.95rem;
+}
+a.choice small {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--muted);
+    font-size: 0.85rem;
 }
 footer {
     margin-top: 2.5rem;
@@ -135,6 +225,10 @@ footer {
 }
 @media (max-width: 640px) {
     main { padding-top: 3rem; }
+}
+@media print {
+    .tabbar { display: none; }
+    .panel { display: block; padding-top: 1.5rem; border-top: 1px solid var(--line); }
 }
 </style>
 </head>
@@ -147,43 +241,219 @@ footer {
 </svg>
 <p class="kicker">Zensurfreier DNS-Resolver</p>
 <h1>${DOMAIN}</h1>
-<p class="lead">Dieser Name beantwortet DNS-Anfragen über HTTPS und TLS, ohne Namen zu sperren. Die Seite selbst liefert keine DNS-Daten. Sie zeigt nur, wie der Resolver zu erreichen ist.</p>
-<p class="en">Public uncensored DNS resolver. Queries use the addresses below. They are not logged.</p>
+<p class="lead">Dieser Name beantwortet DNS-Anfragen über HTTPS und TLS, ohne Namen zu sperren. Die Seite selbst liefert keine DNS-Daten. Unten steht, wie du den Resolver auf deinem Gerät einträgst.</p>
+<p class="en">Public uncensored DNS resolver. The setup steps use this hostname. Queries are not logged.</p>
 <section class="ends" aria-label="Adressen">
 <article class="card">
 <h2>DNS-over-HTTPS</h2>
 <span class="code">https://${DOMAIN}/dns-query</span>
-<span class="where">Port 443</span>
+<span class="where">Port 443 · Browser und Profile</span>
 </article>
 <article class="card">
 <h2>DNS-over-TLS</h2>
 <span class="code">${DOMAIN}</span>
-<span class="where">Port 853</span>
+<span class="where">Port 853 · Android, Apple und Router</span>
 </article>
 </section>
 <h3>Zensurfrei</h3>
 <p>Der Resolver fragt die Root-Server des DNS direkt und geht von dort zum zuständigen Nameserver. Er hängt nicht an Cloudflare, Google oder dem DNS eines Zugangsproviders und sperrt keine Namen.</p>
 <p>DNS-Abfragen werden nicht gespeichert und nicht protokolliert. Antworten werden mit DNSSEC geprüft. Das gilt für jeden, der den Resolver nutzt.</p>
 <h3>Einrichten</h3>
-<ol>
+<p>Überall gilt der Name <code class="inline">${DOMAIN}</code>. Unverschlüsseltes DNS auf Port 53 bietet dieser Resolver nicht an. Wo ein System eine IP-Adresse verlangt, nimm eine Adresse dieses Namens und dazu die verschlüsselte Adresse von oben.</p>
+<div class="guide">
+<input type="radio" name="setup" id="setup-android" checked>
+<input type="radio" name="setup" id="setup-apple">
+<input type="radio" name="setup" id="setup-windows">
+<input type="radio" name="setup" id="setup-browser">
+<input type="radio" name="setup" id="setup-linux">
+<input type="radio" name="setup" id="setup-router">
+<input type="radio" name="setup" id="setup-forward">
+<div class="tabbar">
+<label for="setup-android">Android</label>
+<label for="setup-apple">Apple</label>
+<label for="setup-windows">Windows</label>
+<label for="setup-browser">Browser</label>
+<label for="setup-linux">Linux</label>
+<label for="setup-router">Router</label>
+<label for="setup-forward">Weiterleiten</label>
+</div>
+<section class="panel" id="panel-android">
+<h3>Android und GrapheneOS</h3>
+<p>Ab Android 9, einschließlich GrapheneOS. Der Name reicht, eine IP-Adresse brauchst du nicht.</p>
+<ol class="steps">
 <li>
-<span class="label">Brave und Chrome</span>
-<p>Einstellungen, Datenschutz und Sicherheit, Sicherheit. Sicheres DNS verwenden, dann Benutzerdefiniert, und die DoH-Adresse eintragen.</p>
+<div>
+<span class="label">Privates DNS öffnen</span>
+<p>Einstellungen, dann Netzwerk und Internet. Auf Samsung-Geräten oft Verbindungen, Weitere Verbindungseinstellungen.</p>
+</div>
 </li>
 <li>
-<span class="label">Firefox</span>
-<p>Einstellungen, Datenschutz &amp; Sicherheit, DNS über HTTPS. Anbieter auswählen, Benutzerdefiniert, und die DoH-Adresse eintragen.</p>
+<div>
+<span class="label">Hostname wählen</span>
+<p>Privates DNS, dann Hostname des privaten DNS-Anbieters.</p>
+</div>
 </li>
 <li>
-<span class="label">Android</span>
-<p>Einstellungen, Netzwerk und Internet, Privates DNS. Hostname des privaten DNS-Anbieters: ${DOMAIN}</p>
-</li>
-<li>
-<span class="label">dig</span>
-<p class="code">dig @${DOMAIN} -p 853 +tls example.com</p>
+<div>
+<span class="label">Namen speichern</span>
+<p>Trag <code class="inline">${DOMAIN}</code> ein und speichere. Android spricht damit DNS-over-TLS auf Port 853.</p>
+</div>
 </li>
 </ol>
-<h3>DoH-Test</h3>
+<p class="note">Android merkt sich die aufgelöste Adresse. Nach einem Wechsel des Servers einmal Flugmodus an und aus. Ältere Android-Versionen ohne Privates DNS stellst du im Browser ein.</p>
+</section>
+<section class="panel" id="panel-apple">
+<h3>iPhone, iPad und Mac</h3>
+<p>Ein Profil schaltet verschlüsseltes DNS für das ganze System ein. DNS über HTTPS passt für die meisten.</p>
+<div class="choices">
+<a class="choice" href="doh.mobileconfig"><strong>DNS über HTTPS laden</strong><small>Empfohlen · Port 443</small></a>
+<a class="choice" href="dot.mobileconfig"><strong>DNS über TLS laden</strong><small>Alternative · Port 853</small></a>
+</div>
+<ol class="steps">
+<li>
+<div>
+<span class="label">Profil laden</span>
+<p>Tippe oben auf eine der beiden Dateien. Es ist jeweils nur eine nötig.</p>
+</div>
+</li>
+<li>
+<div>
+<span class="label">Installieren</span>
+<p>Auf dem iPhone erscheint oben in den Einstellungen „Profil geladen“. Dort installieren und bestätigen. Liegt der Hinweis woanders: Allgemein, VPN und Geräteverwaltung. Am Mac die geladene Datei öffnen und unter Systemeinstellungen, Datenschutz und Sicherheit, Profile, installieren.</p>
+</div>
+</li>
+</ol>
+<p class="note">iOS warnt rot vor einem unsignierten Profil. Das Profil stammt von diesem Resolver und enthält nur den Namen ${DOMAIN}. Entfernen geht an derselben Stelle in den Einstellungen.</p>
+</section>
+<section class="panel" id="panel-windows">
+<h3>Windows 11</h3>
+<p>Windows verlangt die IP-Adressen des Namens und zusätzlich die DoH-Vorlage. Die Adressen zeigt <code class="inline">nslookup ${DOMAIN}</code>. Gibt es nur eine, bleibt das zweite Feld leer. IPv6 nur eintragen, wenn der Name eine AAAA-Adresse hat.</p>
+<ol class="steps">
+<li>
+<div>
+<span class="label">Netzwerk öffnen</span>
+<p>Einstellungen, Netzwerk und Internet, WLAN oder Ethernet. Die verbundene Verbindung öffnen, dann Hardwareeigenschaften.</p>
+</div>
+</li>
+<li>
+<div>
+<span class="label">DNS auf manuell stellen</span>
+<p>Neben DNS-Serverzuweisung auf Bearbeiten. Manuell wählen und IPv4 einschalten.</p>
+</div>
+</li>
+<li>
+<div>
+<span class="label">Adressen und Vorlage eintragen</span>
+<p>Bevorzugter DNS und, falls vorhanden, alternativer DNS: die Adressen von <code class="inline">${DOMAIN}</code>. Bei beiden DNS über HTTPS auf Ein (manuelle Vorlage) stellen und diese Vorlage eintragen:</p>
+<pre class="code">https://${DOMAIN}/dns-query</pre>
+</div>
+</li>
+<li>
+<div>
+<span class="label">Klartext aus lassen</span>
+<p>Fallback auf Klartext bleibt aus. Port 53 antwortet hier nicht. Danach speichern.</p>
+</div>
+</li>
+</ol>
+<p class="note">Windows 10 kann System-DNS nicht verschlüsseln. Dafür den Browser nehmen, oder auf Windows 11 wechseln.</p>
+</section>
+<section class="panel" id="panel-browser">
+<h3>Firefox</h3>
+<ol class="steps">
+<li>
+<div>
+<span class="label">Netzwerk öffnen</span>
+<p><code class="inline">about:preferences#general</code> öffnen, nach unten zu Netzwerkeinstellungen, dann Einstellungen.</p>
+</div>
+</li>
+<li>
+<div>
+<span class="label">Eigenen Anbieter eintragen</span>
+<p>DNS über HTTPS aktivieren, Maximaler Schutz, Anbieter Benutzerdefiniert, und die DoH-Adresse eintragen:</p>
+<pre class="code">https://${DOMAIN}/dns-query</pre>
+</div>
+</li>
+</ol>
+<h3>Chrome, Edge und Brave</h3>
+<ol class="steps">
+<li>
+<div>
+<span class="label">Sicherheit öffnen</span>
+<p>Einstellungen, Datenschutz und Sicherheit, Sicherheit.</p>
+</div>
+</li>
+<li>
+<div>
+<span class="label">Sicheres DNS eintragen</span>
+<p>Sicheres DNS verwenden, dann Mit Benutzerdefiniert, und dieselbe DoH-Adresse eintragen.</p>
+</div>
+</li>
+</ol>
+<p class="note">Der Browser verschlüsselt dann seine eigenen Anfragen. Andere Programme auf dem Gerät nutzen weiter das DNS des Systems, bis du Android, Apple, Windows oder Linux wie oben einstellst.</p>
+</section>
+<section class="panel" id="panel-linux">
+<h3>systemd-resolved</h3>
+<p>Die grafische Netzwerkeinstellung trägt unverschlüsseltes DNS ein. Das erreicht diesen Resolver nicht. Trag in <code class="inline">/etc/systemd/resolved.conf</code> jede Adresse von <code class="inline">${DOMAIN}</code> ein. <code class="inline">203.0.113.10</code> ist nur ein Platzhalter, eine eigene Zeile pro Adresse:</p>
+<pre class="code">[Resolve]
+DNS=203.0.113.10#${DOMAIN}
+DNSOverTLS=yes</pre>
+<p>Die Adressen liefert <code class="inline">dig +short ${DOMAIN} A</code>. Danach <code class="inline">sudo systemctl restart systemd-resolved</code>.</p>
+<h3>NetworkManager</h3>
+<p>Dieselbe Adresse, mit dem TLS-Namen hinter der Raute. <code class="inline">VERBINDUNG</code> ist der Name aus <code class="inline">nmcli connection show</code>.</p>
+<pre class="code">nmcli connection modify "VERBINDUNG" \
+  ipv4.dns "203.0.113.10#${DOMAIN}" \
+  ipv4.ignore-auto-dns yes \
+  connection.dns-over-tls yes
+nmcli connection up "VERBINDUNG"</pre>
+<p class="note">DNS über TLS wirkt hier nur, wenn NetworkManager systemd-resolved als DNS-Plugin nutzt. Sonst bleiben die Anfragen unverschlüsselt oder schlagen fehl. Im Zweifel den Browser nehmen.</p>
+</section>
+<section class="panel" id="panel-router">
+<h3>FRITZ!Box</h3>
+<p>Ab FRITZ!OS 7.20. Unten rechts die erweiterte Ansicht einschalten, falls der Reiter fehlt. Die Box verbindet sich mit den Adressen auf Port 853 und prüft das Zertifikat gegen den Namen.</p>
+<ol class="steps">
+<li>
+<div>
+<span class="label">DNS-Server öffnen</span>
+<p><a href="http://fritz.box">http://fritz.box</a>, dann Internet, Zugangsdaten, DNS-Server.</p>
+</div>
+</li>
+<li>
+<div>
+<span class="label">Adressen eintragen</span>
+<p>Andere DNSv4-Server verwenden. Bevorzugt und, falls vorhanden, alternativ: die Adressen von <code class="inline">${DOMAIN}</code>. Eine IPv6-Adresse nur eintragen, wenn der Name eine hat. Sonst die vom Anbieter verteilten DNSv6-Server abschalten, damit Anfragen nicht daran vorbeigehen.</p>
+</div>
+</li>
+<li>
+<div>
+<span class="label">DNS over TLS</span>
+<p>Verschlüsselte Namensauflösung im Internet einschalten. Zertifikatsprüfung an, Fallback auf unverschlüsselte Auflösung aus. Bei den aufgelösten Namen <code class="inline">${DOMAIN}</code> eintragen, einmal pro Adresse. Übernehmen.</p>
+</div>
+</li>
+</ol>
+<h3>MikroTik</h3>
+<p>RouterOS löst den Namen in der DoH-Adresse einmal über die bisher eingetragenen DNS-Server auf. Danach gehen die Anfragen an diese Adresse. Schlägt die Zertifikatsprüfung fehl, das ISRG-Root von Let's Encrypt importieren.</p>
+<pre class="code">/ip dns set use-doh-server=https://${DOMAIN}/dns-query verify-doh-cert=yes</pre>
+<h3>OpenWrt</h3>
+<p>Das Paket https-dns-proxy installieren und als URL die DoH-Adresse dieses Resolvers eintragen. Eine Weiterleitung auf Port 53 erreicht ihn nicht.</p>
+</section>
+<section class="panel" id="panel-forward">
+<h3>AdGuard Home</h3>
+<p>Einstellungen, DNS-Einstellungen, Upstream-DNS-Server. Eine Zeile reicht, beide gehen zum selben Resolver:</p>
+<pre class="code">tls://${DOMAIN}
+https://${DOMAIN}/dns-query</pre>
+<h3>Unbound</h3>
+<p><code class="inline">203.0.113.10</code> durch eine Adresse von <code class="inline">${DOMAIN}</code> ersetzen. Jede weitere Adresse bekommt eine eigene <code class="inline">forward-addr</code>-Zeile.</p>
+<pre class="code">forward-zone:
+    name: "."
+    forward-tls-upstream: yes
+    forward-addr: 203.0.113.10@853#${DOMAIN}</pre>
+<h3>Pi-hole</h3>
+<p>Die DNS-Felder von Pi-hole erwarten unverschlüsseltes DNS auf Port 53. Dieser Resolver nimmt das nicht an. AdGuard Home oder Unbound davor setzen und dort die Zeilen von oben eintragen.</p>
+</section>
+</div>
+<h3>Prüfen</h3>
+<p>DNS über TLS, mit gesetztem AD-Bit bei einem signierten Namen:</p>
+<pre class="code">dig @${DOMAIN} -p 853 +tls example.com</pre>
 <p>Einen DoH-DNS-Test kann man hier durchführen:</p>
 <p class="code"><a href="https://yusaiku.github.io/dns-tester-eu/">https://yusaiku.github.io/dns-tester-eu/</a></p>
 <footer>Zensurfrei. Direkt an die Root-Server. Keine Abfrage-Logs.</footer>

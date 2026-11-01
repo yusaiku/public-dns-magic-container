@@ -7,7 +7,7 @@ Das fertige Image liegt öffentlich unter `ghcr.io/yusaiku/dns-magic:latest`. Ei
 ## Was du damit bekommst
 
 - **DNS-over-HTTPS** auf Port `443`, Pfad `/dns-query`. Das nutzen Brave, Chrome und Firefox.
-- **Eine Infoseite** auf `https://dein-name/`. Sie erklärt die beiden Adressen. DNS-Anfragen laufen nicht über diese Seite.
+- **Eine Infoseite** auf `https://dein-name/`. Sie zeigt die beiden Adressen und eine Einrichtung für Android, Apple, Windows, Browser, Linux und Router. DNS-Anfragen laufen nicht über diese Seite.
 - **DNS-over-TLS** auf Port `853`. Das nutzen Android („Privates DNS“) und `dig`.
 - **Zensurfrei.** Der Resolver fragt die Root-Server des DNS und danach den zuständigen Nameserver. Er leitet keine Anfrage an Cloudflare, Google oder einen anderen Resolver weiter und sperrt keine Namen.
 - **DNSSEC.** Antworten werden geprüft.
@@ -169,7 +169,7 @@ Die Antwort ist binär und kurz. Ein Fehler wäre eine HTML-Seite oder ein HTTP-
 
 ## Beim Gerät eintragen
 
-Die Infoseite sagt dasselbe. Hier die kurze Form:
+Die Infoseite unter `https://dns.example.com/` führt durch dieselben Schritte, mit dem Namen, den du dem Container gegeben hast. Für iPhone und Mac liegt dort ein Profil zum Herunterladen. Hier die kurze Form:
 
 - **Brave und Chrome:** Einstellungen, Datenschutz und Sicherheit, Sicherheit, Sicheres DNS verwenden, Benutzerdefiniert. Eintragen: `https://dns.example.com/dns-query`
 - **Firefox:** Einstellungen, Datenschutz und Sicherheit, DNS über HTTPS, Anbieter auswählen, Benutzerdefiniert. Dieselbe Adresse eintragen.

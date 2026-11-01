@@ -480,22 +480,27 @@ render_nginx_from() {
     envsubst '$DOMAIN' <"$template" >"$out"
 }
 
-render_info_page() {
-    local rendered="/var/www/dns-magic/index.html"
-    local tmp
-    mkdir -p /var/www/dns-magic
-    # The entrypoint uses umask 077 for the env file. Nginx workers run as
-    # www-data and must be able to read this page.
-    chmod 755 /var/www /var/www/dns-magic
+render_public_file() {
+    local template="$1" rendered="$2" tmp
     tmp="$(mktemp)"
-    envsubst '$DOMAIN' < /opt/dns-magic/index.html.template >"$tmp"
+    envsubst '$DOMAIN' <"$template" >"$tmp"
     if ! cmp -s "$tmp" "$rendered"; then
         mv "$tmp" "$rendered"
-        log "rendered the info page for ${DOMAIN}"
+        log "rendered $(basename "$rendered") for ${DOMAIN}"
     else
         rm -f "$tmp"
     fi
     chmod 644 "$rendered"
+}
+
+render_info_page() {
+    mkdir -p /var/www/dns-magic
+    # The entrypoint uses umask 077 for the env file. Nginx workers run as
+    # www-data and must be able to read this page.
+    chmod 755 /var/www /var/www/dns-magic
+    render_public_file /opt/dns-magic/index.html.template /var/www/dns-magic/index.html
+    render_public_file /opt/dns-magic/doh.mobileconfig.template /var/www/dns-magic/doh.mobileconfig
+    render_public_file /opt/dns-magic/dot.mobileconfig.template /var/www/dns-magic/dot.mobileconfig
 }
 
 nginx_ok() {

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>DNSSettings</key>
+			<dict>
+				<key>DNSProtocol</key>
+				<string>HTTPS</string>
+				<key>ServerURL</key>
+				<string>https://${DOMAIN}/dns-query</string>
+			</dict>
+			<key>PayloadDescription</key>
+			<string>DNS über HTTPS</string>
+			<key>PayloadDisplayName</key>
+			<string>${DOMAIN}</string>
+			<key>PayloadIdentifier</key>
+			<string>dns-magic.doh.${DOMAIN}</string>
+			<key>PayloadType</key>
+			<string>com.apple.dnsSettings.managed</string>
+			<key>PayloadUUID</key>
+			<string>6b1f0c2a-7e54-4a1d-9c30-11d4a8e2b701</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>Verschlüsseltes DNS für ${DOMAIN}</string>
+	<key>PayloadDisplayName</key>
+	<string>${DOMAIN} DNS über HTTPS</string>
+	<key>PayloadIdentifier</key>
+	<string>dns-magic.profile.doh.${DOMAIN}</string>
+	<key>PayloadRemovalDisallowed</key>
+	<false/>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>6b1f0c2a-7e54-4a1d-9c30-11d4a8e2b702</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>

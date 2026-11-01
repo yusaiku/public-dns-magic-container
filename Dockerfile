@@ -34,6 +34,7 @@ RUN mkdir -p /etc/nginx/ssl /etc/unbound /var/lib/unbound /var/lib/dns-magic /va
 COPY unbound.conf /opt/dns-magic/unbound.conf
 COPY nginx.conf.template /opt/dns-magic/nginx.conf.template
 COPY index.html.template /opt/dns-magic/index.html.template
+COPY doh.mobileconfig.template dot.mobileconfig.template /opt/dns-magic/
 COPY unbound.conf /etc/unbound/unbound.conf
 COPY nginx.conf.template /etc/nginx/nginx.conf.template
 COPY haproxy.cfg /etc/haproxy/haproxy.cfg
@@ -63,7 +64,13 @@ RUN chmod 755 /entrypoint.sh /usr/local/bin/upgrade-packages.sh /usr/local/bin/s
     && nginx -t \
     && haproxy -c -f /etc/haproxy/haproxy.cfg \
     && DOMAIN=build.invalid envsubst '$DOMAIN' < /opt/dns-magic/index.html.template > /var/www/dns-magic/index.html \
-    && rm -f /etc/nginx/nginx.conf /etc/nginx/ssl/privkey.pem /etc/nginx/ssl/fullchain.cer /var/www/dns-magic/index.html
+    && DOMAIN=build.invalid envsubst '$DOMAIN' < /opt/dns-magic/doh.mobileconfig.template > /var/www/dns-magic/doh.mobileconfig \
+    && DOMAIN=build.invalid envsubst '$DOMAIN' < /opt/dns-magic/dot.mobileconfig.template > /var/www/dns-magic/dot.mobileconfig \
+    && grep -q 'https://build.invalid/dns-query' /var/www/dns-magic/index.html \
+    && grep -q 'https://build.invalid/dns-query' /var/www/dns-magic/doh.mobileconfig \
+    && grep -q '>build.invalid<' /var/www/dns-magic/dot.mobileconfig \
+    && rm -f /etc/nginx/nginx.conf /etc/nginx/ssl/privkey.pem /etc/nginx/ssl/fullchain.cer \
+        /var/www/dns-magic/index.html /var/www/dns-magic/doh.mobileconfig /var/www/dns-magic/dot.mobileconfig
 
 LABEL org.opencontainers.image.source="https://github.com/yusaiku/public-dns-magic-container" \
       org.opencontainers.image.description="Public DoH and DoT resolver for bunny.net Magic Containers"
