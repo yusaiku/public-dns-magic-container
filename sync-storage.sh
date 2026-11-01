@@ -65,10 +65,12 @@ resolve_storage() {
     STORAGE_PREFIX="${STORAGE_PREFIX%/}"
 
     if [[ -z "$STORAGE_ZONE" || -z "$STORAGE_PASSWORD" ]]; then
-        log "Connect Storage did not provide a zone name and password."
-        log "Expected BUNNY_STORAGE_ZONE and BUNNY_STORAGE_PASSWORD, plus BUNNY_STORAGE_REGION or BUNNY_STORAGE_HOSTNAME."
-        log "Storage variables present: $(storage_names)"
-        exit 1
+        if [[ "${1:-}" != "quiet" ]]; then
+            log "Connect Storage did not provide a zone name and password."
+            log "Expected BUNNY_STORAGE_ZONE and BUNNY_STORAGE_PASSWORD, plus BUNNY_STORAGE_REGION or BUNNY_STORAGE_HOSTNAME."
+            log "Storage variables present: $(storage_names)"
+        fi
+        return 1
     fi
 
     endpoint="$(first_set BUNNY_STORAGE_ENDPOINT || true)"
@@ -80,8 +82,10 @@ resolve_storage() {
         if [[ "$endpoint" =~ ^(https?://[^/]+) ]]; then
             schemehost="${BASH_REMATCH[1]}"
         else
-            log "BUNNY_STORAGE_ENDPOINT must start with http:// or https://"
-            exit 1
+            if [[ "${1:-}" != "quiet" ]]; then
+                log "BUNNY_STORAGE_ENDPOINT must start with http:// or https://"
+            fi
+            return 1
         fi
     elif [[ -n "$host" ]]; then
         host="${host#https://}"
@@ -98,10 +102,12 @@ resolve_storage() {
     fi
 
     STORAGE_BASE="${schemehost}/${STORAGE_ZONE}"
-    if [[ -n "${BUNNY_STORAGE_CDN_URL:-}" ]]; then
+    if [[ -n "${BUNNY_STORAGE_CDN_URL:-}" && "${1:-}" != "quiet" ]]; then
         log "BUNNY_STORAGE_CDN_URL is set. Do not attach a pull zone to this storage zone, or the certificate key is readable through the CDN."
     fi
-    log "Storage zone ${STORAGE_ZONE} via ${schemehost}"
+    if [[ "${1:-}" != "quiet" ]]; then
+        log "Storage zone ${STORAGE_ZONE} via ${schemehost}"
+    fi
 }
 
 object_url() {
@@ -684,4 +690,6 @@ main() {
     fi
 }
 
-main "$@"
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    main "$@"
+fi

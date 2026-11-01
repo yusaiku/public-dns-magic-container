@@ -218,6 +218,20 @@ a.choice small {
     color: var(--muted);
     font-size: 0.85rem;
 }
+iframe.stats {
+    display: block;
+    width: 100%;
+    height: 18.5rem;
+    margin-top: 0.85rem;
+    border: 0;
+    background: transparent;
+}
+@media (min-width: 640px) {
+    iframe.stats { height: 13rem; }
+}
+@media (min-width: 900px) {
+    iframe.stats { height: 8.75rem; }
+}
 footer {
     margin-top: 2.5rem;
     color: var(--muted);
@@ -255,6 +269,9 @@ footer {
 <span class="where">Port 853 · Android, Apple und Router</span>
 </article>
 </section>
+<h3>Betrieb</h3>
+<p>Anfragen pro Sekunde, Anteil aus dem Cache, SERVFAIL, Antworten über einer Sekunde und die Antwortzeit. Server desselben Resolvers werden zusammengezählt.</p>
+<iframe class="stats" src="stats.html" title="Anfragen, Cache und Antwortzeit" referrerpolicy="no-referrer"></iframe>
 <h3>Zensurfrei</h3>
 <p>Der Resolver fragt die Root-Server des DNS direkt und geht von dort zum zuständigen Nameserver. Er hängt nicht an Cloudflare, Google oder dem DNS eines Zugangsproviders und sperrt keine Namen.</p>
 <p>DNS-Abfragen werden nicht gespeichert und nicht protokolliert. Antworten werden mit DNSSEC geprüft. Das gilt für jeden, der den Resolver nutzt.</p>

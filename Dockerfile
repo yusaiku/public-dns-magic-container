@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         gettext-base \
         openssl \
         jq \
+        gawk \
     && rm -rf /var/lib/apt/lists/*
 
 # The install-time account is removed. Each deployment registers its own.
@@ -43,6 +44,8 @@ COPY upgrade-packages.sh /usr/local/bin/upgrade-packages.sh
 COPY sync-storage.sh /usr/local/bin/sync-storage.sh
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY dns-magic-sync /etc/cron.d/dns-magic-sync
+COPY dns-magic-stats.sh /usr/local/bin/dns-magic-stats.sh
+COPY dns-magic-stats.cron /etc/cron.d/dns-magic-stats
 COPY no-fastopen.c /tmp/no-fastopen.c
 
 RUN apt-get update \
@@ -53,8 +56,8 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
-RUN chmod 755 /entrypoint.sh /usr/local/bin/upgrade-packages.sh /usr/local/bin/sync-storage.sh \
-    && chmod 644 /etc/cron.d/dns-magic-sync \
+RUN chmod 755 /entrypoint.sh /usr/local/bin/upgrade-packages.sh /usr/local/bin/sync-storage.sh /usr/local/bin/dns-magic-stats.sh \
+    && chmod 644 /etc/cron.d/dns-magic-sync /etc/cron.d/dns-magic-stats \
     && openssl req -x509 -nodes -days 1 -newkey rsa:2048 \
         -keyout /etc/nginx/ssl/privkey.pem \
         -out /etc/nginx/ssl/fullchain.cer \
@@ -63,6 +66,9 @@ RUN chmod 755 /entrypoint.sh /usr/local/bin/upgrade-packages.sh /usr/local/bin/s
     && DOMAIN=build.invalid envsubst '$DOMAIN' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf \
     && nginx -t \
     && haproxy -c -f /etc/haproxy/haproxy.cfg \
+    && bash -n /usr/local/bin/dns-magic-stats.sh \
+    && bash -n /usr/local/bin/sync-storage.sh \
+    && command -v gawk >/dev/null \
     && DOMAIN=build.invalid envsubst '$DOMAIN' < /opt/dns-magic/index.html.template > /var/www/dns-magic/index.html \
     && DOMAIN=build.invalid envsubst '$DOMAIN' < /opt/dns-magic/doh.mobileconfig.template > /var/www/dns-magic/doh.mobileconfig \
     && DOMAIN=build.invalid envsubst '$DOMAIN' < /opt/dns-magic/dot.mobileconfig.template > /var/www/dns-magic/dot.mobileconfig \
