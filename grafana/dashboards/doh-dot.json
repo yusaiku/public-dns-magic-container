@@ -1,7 +1,7 @@
 {
   "uid": "dns-magic",
   "title": "DoH / DoT",
-  "description": "Öffentliche Zähler bis zur Antwortzeit. Die Antwortzeit gilt für Abfragen, die nicht im Cache lagen.",
+  "description": "Öffentliche Zähler bis zur Antwortzeit, dazu die Länder der Verbindungen. Die Antwortzeit gilt für Abfragen, die nicht im Cache lagen.",
   "editable": false,
   "schemaVersion": 39,
   "version": 1,
@@ -197,12 +197,66 @@
       }
     },
     {
+      "id": 8,
+      "type": "row",
+      "title": "Länder",
+      "collapsed": false,
+      "panels": [],
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 }
+    },
+    {
+      "id": 9,
+      "type": "bargauge",
+      "title": "Länder",
+      "description": "Antwortbytes pro Sekunde nach Land. Die Adresse und der abgefragte Name werden nicht gespeichert.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 9 },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "avg_over_time(dns_magic_country_bytes_per_second[$__range])",
+          "legendFormat": "{{country}}",
+          "range": false,
+          "instant": true,
+          "editorMode": "code"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": { "regex": "OTHER", "renamePattern": "Andere" }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps",
+          "decimals": 0,
+          "min": 0,
+          "noValue": "Keine Daten",
+          "color": { "mode": "continuous-BlPu" }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "values": false, "calcs": ["lastNotNull"], "fields": "" },
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true,
+        "minVizHeight": 10,
+        "maxVizHeight": 300,
+        "namePlacement": "left",
+        "sizing": "auto",
+        "valueMode": "color"
+      }
+    },
+    {
       "id": 5,
       "type": "row",
       "title": "Latency",
       "collapsed": false,
       "panels": [],
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 }
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 }
     },
     {
       "id": 6,
@@ -210,7 +264,7 @@
       "title": "Latency",
       "description": "Mittlere Auflösungszeit der Abfragen, die nicht im Cache lagen.",
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 9 },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 18 },
       "targets": [
         {
           "refId": "A",
@@ -252,10 +306,10 @@
       "type": "text",
       "title": "",
       "transparent": true,
-      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 17 },
+      "gridPos": { "h": 5, "w": 24, "x": 0, "y": 26 },
       "options": {
         "mode": "markdown",
-        "content": "Die Antwortzeit ist die Zeit des Resolvers für Abfragen, die nicht im Cache lagen. Mehrere Server mit derselben Storage Zone zählen zusammen, solange die Zone erreichbar ist. Sonst gelten die Zahlen nur für diesen Server. Sperren, verworfene Anfragen und Zeiten je Protokoll werden nicht gemessen."
+        "content": "Die Antwortzeit ist die Zeit des Resolvers für Abfragen, die nicht im Cache lagen. Die Länder zeigen, wohin die Antworten gingen, in Byte pro Sekunde. Gespeichert wird nur diese Länderzahl, nicht die Adresse und nicht der abgefragte Name. Mehrere Server mit derselben Storage Zone zählen zusammen, solange die Zone erreichbar ist. Sonst gelten die Zahlen nur für diesen Server. Sperren, verworfene Anfragen und Zeiten je Protokoll werden nicht gemessen.\n\nIP Geolocation by [DB-IP](https://db-ip.com/)."
       }
     }
   ]

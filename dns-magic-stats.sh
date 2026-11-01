@@ -1,5 +1,5 @@
 #!/bin/bash
-# Feed Grafana the public counters through latency.
+# Feed Grafana the public counters through latency, plus country totals.
 # Counters only. No names, no client addresses, no block list.
 set -euo pipefail
 export LC_ALL=C
@@ -31,7 +31,9 @@ gauge() {
 write_metrics() {
     # qps, cache percent, servfail percent, slow percent, latency ms, combined 0/1.
     # A negative percent or latency is left out so Grafana shows no data.
-    local qps="$1" cache="$2" servfail="$3" slow="$4" latency="$5" combined="$6" tmp
+    # The seventh argument is a JSON object of country code to bytes per second.
+    local qps="$1" cache="$2" servfail="$3" slow="$4" latency="$5" combined="$6"
+    local countries="${7:-{}}" tmp cc val
     mkdir -p "$STATEDIR"
     find "$STATEDIR" -name '.metrics.*' -delete 2>/dev/null || true
     tmp="$(mktemp "${STATEDIR}/.metrics.XXXXXX")"
@@ -50,6 +52,13 @@ write_metrics() {
             gauge dns_magic_latency_milliseconds "$latency"
         fi
         gauge dns_magic_combined "$combined"
+        if [[ -n "$countries" && "$countries" != "{}" ]]; then
+            printf '# TYPE dns_magic_country_bytes_per_second gauge\n'
+            while IFS=' ' read -r cc val; do
+                [[ "$cc" =~ ^([A-Z]{2}|OTHER)$ ]] || continue
+                printf 'dns_magic_country_bytes_per_second{country="%s"} %.6f\n' "$cc" "$val"
+            done < <(jq -r 'to_entries[] | select(.value > 0) | "\(.key) \(.value)"' <<<"$countries")
+        fi
     } >"$tmp"
     chmod 644 "$tmp"
     mv "$tmp" "$METRICS"
@@ -120,6 +129,58 @@ diff_dumps() {
     ' "$older" "$newer"
 }
 
+# Keep the largest country rates. The tail is one bucket, still without addresses.
+fold_countries() {
+    local keep="$1"
+    jq -c --argjson keep "$keep" '
+        def fold($n):
+            to_entries
+            | map(select(
+                (.key | test("^[A-Z]{2}$|^OTHER$"))
+                and (.value | type == "number")
+                and .value > 0
+                and .value <= 1000000000
+            ))
+            | sort_by(-.value)
+            | (.[$n:] | map(.value) | add // 0) as $rest
+            | (.[0:$n] | from_entries) as $head
+            | if $rest > 0 then $head + {OTHER: (($head.OTHER // 0) + $rest)} else $head end;
+        fold($keep)
+    '
+}
+
+snapshot_geo() {
+    local now="$1" src="$STATEDIR/country.cumul" dest="$STATEDIR/g-$now"
+    if [[ -s "$src" ]] && jq -e 'type == "object"' "$src" >/dev/null 2>&1; then
+        cp "$src" "$dest"
+    else
+        printf '%s\n' '{}' >"$dest"
+    fi
+    chmod 644 "$dest"
+}
+
+# Cumulative country files and the seconds between them. Prints bytes/second.
+# A counter that went backwards is omitted. Keys that are not countries are omitted.
+diff_countries() {
+    local older="$1" newer="$2" span="$3"
+    [[ -s "$older" ]] || printf '%s\n' '{}' >"$older"
+    [[ -s "$newer" ]] || printf '%s\n' '{}' >"$newer"
+    jq -n -c --argjson span "$span" --slurpfile older "$older" --slurpfile newer "$newer" '
+        def n(v): if (v | type) == "number" then v else 0 end;
+        ($older[0] // {}) as $a
+        | ($newer[0] // {}) as $b
+        | if ($a | type) != "object" or ($b | type) != "object" or $span <= 0 then {}
+          else
+            reduce (($a + $b) | keys[]) as $k ({};
+                if (($k | test("^[A-Z]{2}$|^OTHER$")) and ((n($b[$k]) - n($a[$k])) > 0))
+                then .[$k] = ((n($b[$k]) - n($a[$k])) / $span)
+                else .
+                end
+            )
+          end
+    ' | fold_countries 24
+}
+
 collect_window() {
     local now stats ref oldest f epoch span json
     now="$(date +%s)"
@@ -134,7 +195,9 @@ collect_window() {
     fi
     printf '%s\n' "$stats" >"$STATEDIR/s-$now"
     chmod 600 "$STATEDIR/s-$now"
+    snapshot_geo "$now"
     find "$STATEDIR" -name 's-*' -mmin +20 -delete
+    find "$STATEDIR" -name 'g-*' -mmin +20 -delete
     ref=""
     oldest=""
     for f in "$STATEDIR"/s-*; do
@@ -159,8 +222,13 @@ collect_window() {
     [[ "$span" -ge $MIN_SPAN ]] || return 1
     if ! json="$(diff_dumps "$STATEDIR/s-$ref" "$STATEDIR/s-$now" "$span")"; then
         find "$STATEDIR" -name 's-*' ! -name "s-$now" -delete
+        find "$STATEDIR" -name 'g-*' ! -name "g-$now" -delete
         return 1
     fi
+    local cjson='{}'
+    cjson="$(diff_countries "$STATEDIR/g-$ref" "$STATEDIR/g-$now" "$span")" || cjson='{}'
+    [[ -n "$cjson" ]] || cjson='{}'
+    json="$(jq -c --argjson countries "$cjson" '. + {countries: $countries}' <<<"$json")"
     printf '%s' "$json"
 }
 
@@ -188,7 +256,10 @@ render_from_json() {
     else
         latency=-1
     fi
-    write_metrics "$qps" "$cache" "$servfail" "$slow" "$latency" "$combined"
+    local countries='{}'
+    countries="$(jq -c '(.countries // {}) | if type == "object" then . else {} end' <<<"$json" | fold_countries 10)" || countries='{}'
+    [[ -n "$countries" ]] || countries='{}'
+    write_metrics "$qps" "$cache" "$servfail" "$slow" "$latency" "$combined" "$countries"
 }
 
 instance_id() {
@@ -216,15 +287,34 @@ combine_json_files() {
             (.latency_ms_sum | type) == "number" and .latency_ms_sum >= 0 and
             (.lookups == 0 or (.latency_ms_sum / .lookups) <= 60000)
         ))
-        | if length == 0 then empty else {
-            qps: (map(.qps) | add),
-            answers: (map(.answers) | add),
-            hits: (map(.hits) | add),
-            servfails: (map(.servfails) | add),
-            slow: (map(.slow) | add),
-            lookups: (map(.lookups) | add),
-            latency_ms_sum: (map(.latency_ms_sum) | add)
-        } end
+        | if length == 0 then empty else
+            . as $rows
+            | {
+                qps: ($rows | map(.qps) | add),
+                answers: ($rows | map(.answers) | add),
+                hits: ($rows | map(.hits) | add),
+                servfails: ($rows | map(.servfails) | add),
+                slow: ($rows | map(.slow) | add),
+                lookups: ($rows | map(.lookups) | add),
+                latency_ms_sum: ($rows | map(.latency_ms_sum) | add),
+                countries: (
+                    [ $rows[]
+                      | (.countries // {})
+                      | if type == "object" then . else {} end
+                      | to_entries[]
+                      | select(
+                          (.key | test("^[A-Z]{2}$|^OTHER$"))
+                          and (.value | type == "number")
+                          and .value >= 0
+                          and .value <= 1000000000
+                      )
+                    ]
+                    | group_by(.key)
+                    | map({key: .[0].key, value: (map(.value) | add)})
+                    | from_entries
+                )
+            }
+          end
     ' "$@"
 }
 
@@ -296,10 +386,11 @@ main_stats() {
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
     case "${1:-}" in
         diff) diff_dumps "$2" "$3" "$4" ;;
+        countries) diff_countries "$2" "$3" "$4" ;;
         render)
             render_from_json "$(cat "$2")" "$3"
             ;;
         "") main_stats ;;
-        *) printf 'usage: dns-magic-stats.sh [diff older newer span | render json combined]\n' >&2; exit 1 ;;
+        *) printf 'usage: dns-magic-stats.sh [diff older newer span | countries older newer span | render json combined]\n' >&2; exit 1 ;;
     esac
 fi

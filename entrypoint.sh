@@ -43,6 +43,7 @@ write_env_file() {
 write_env_file
 log "DNS resolver for ${DOMAIN}"
 /usr/local/bin/sync-storage.sh bootstrap
+/usr/local/bin/dns-magic-geo.sh refresh || log "country database unavailable, the country chart stays empty"
 /usr/local/bin/dns-magic-stats.sh || log "Grafana will show numbers after the first measurement"
-log "Starting unbound, haproxy, nginx, Prometheus, Grafana and the storage sync"
+log "Starting unbound, haproxy, nginx, Prometheus, Grafana, the country counter and the storage sync"
 exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf

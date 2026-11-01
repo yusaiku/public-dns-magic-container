@@ -24,6 +24,9 @@ http {
         default upgrade;
         ''      close;
     }
+    # The country counter reads this. The line is the client address and the
+    # response size. The address is not written to a file.
+    log_format geo '$remote_addr $bytes_sent';
     limit_conn_zone $binary_remote_addr zone=perip:10m;
     limit_req_status 429;
     limit_conn_status 429;
@@ -50,6 +53,8 @@ http {
         location = /dns-query {
             limit_req zone=doh burst=40 nodelay;
             limit_conn perip 16;
+            # Volume for the country chart only. The query name is not included.
+            access_log syslog:server=unix:/run/dns-magic-geo.sock,facility=local7,tag=geo,severity=info,nohostname geo;
             proxy_pass http://127.0.0.1:4444;
             proxy_http_version 1.1;
             proxy_set_header Host $host;

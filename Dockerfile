@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         openssl \
         jq \
         gawk \
+        libmaxminddb0 \
     && rm -rf /var/lib/apt/lists/*
 
 # The install-time account is removed. Each deployment registers its own.
@@ -64,20 +65,26 @@ COPY dns-magic-stats.sh /usr/local/bin/dns-magic-stats.sh
 COPY dns-magic-stats.cron /etc/cron.d/dns-magic-stats
 COPY dns-magic-grafana.sh /usr/local/bin/dns-magic-grafana.sh
 COPY dns-magic-prometheus.sh /usr/local/bin/dns-magic-prometheus.sh
+COPY dns-magic-geo.sh /usr/local/bin/dns-magic-geo.sh
 COPY prometheus.yml /opt/dns-magic/prometheus.yml
 COPY grafana /opt/dns-magic/grafana
 COPY no-fastopen.c /tmp/no-fastopen.c
+COPY dns-magic-geod.c /tmp/dns-magic-geod.c
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc libc6-dev \
+    && apt-get install -y --no-install-recommends gcc libc6-dev libmaxminddb-dev \
     && gcc -shared -fPIC -O2 -o /usr/local/lib/no-fastopen.so /tmp/no-fastopen.c -ldl \
-    && rm -f /tmp/no-fastopen.c \
-    && apt-get purge -y gcc libc6-dev \
+    && gcc -O2 -o /usr/local/bin/dns-magic-geod /tmp/dns-magic-geod.c -lmaxminddb \
+    && rm -f /tmp/no-fastopen.c /tmp/dns-magic-geod.c \
+    && apt-mark manual libmaxminddb0 \
+    && apt-get purge -y gcc libc6-dev libmaxminddb-dev \
     && apt-get autoremove -y \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && ldd /usr/local/bin/dns-magic-geod | grep -q libmaxminddb
 
 RUN chmod 755 /entrypoint.sh /usr/local/bin/upgrade-packages.sh /usr/local/bin/sync-storage.sh \
         /usr/local/bin/dns-magic-stats.sh /usr/local/bin/dns-magic-grafana.sh /usr/local/bin/dns-magic-prometheus.sh \
+        /usr/local/bin/dns-magic-geo.sh /usr/local/bin/dns-magic-geod \
     && chmod 644 /etc/cron.d/dns-magic-sync /etc/cron.d/dns-magic-stats \
     && openssl req -x509 -nodes -days 1 -newkey rsa:2048 \
         -keyout /etc/nginx/ssl/privkey.pem \
@@ -88,6 +95,7 @@ RUN chmod 755 /entrypoint.sh /usr/local/bin/upgrade-packages.sh /usr/local/bin/s
     && nginx -t \
     && haproxy -c -f /etc/haproxy/haproxy.cfg \
     && bash -n /usr/local/bin/dns-magic-stats.sh \
+    && bash -n /usr/local/bin/dns-magic-geo.sh \
     && bash -n /usr/local/bin/sync-storage.sh \
     && bash -n /usr/local/bin/dns-magic-grafana.sh \
     && bash -n /usr/local/bin/dns-magic-prometheus.sh \
@@ -96,8 +104,20 @@ RUN chmod 755 /entrypoint.sh /usr/local/bin/upgrade-packages.sh /usr/local/bin/s
     && command -v prometheus >/dev/null \
     && grep -q 'proxy_pass http://127.0.0.1:3000' /etc/nginx/nginx.conf \
     && grep -q '127.0.0.1:9100' /etc/nginx/nginx.conf \
+    && grep -q 'unix:/run/dns-magic-geo.sock' /etc/nginx/nginx.conf \
     && ! grep -q frame-ancestors /etc/nginx/nginx.conf \
-    && jq -e '.uid == "dns-magic" and (([.panels[].targets[]?.expr] | index("dns_magic_latency_milliseconds")) != null)' /opt/dns-magic/grafana/dashboards/doh-dot.json >/dev/null \
+    && test "$(grep -c 'access_log syslog' /etc/nginx/nginx.conf)" = 1 \
+    && jq -e '.uid == "dns-magic" and (([.panels[].targets[]?.expr | select(type == "string")] | index("dns_magic_latency_milliseconds")) != null) and (([.panels[].targets[]?.expr | select(type == "string" and contains("dns_magic_country_bytes_per_second"))] | length) == 1)' /opt/dns-magic/grafana/dashboards/doh-dot.json >/dev/null \
+    && printf '%s\n' '{"DE":3000,"US":600,"1.2.3.4":99}' > /tmp/c-old.json \
+    && printf '%s\n' '{"DE":6000,"US":600,"FR":300,"1.2.3.4":199}' > /tmp/c-new.json \
+    && /usr/local/bin/dns-magic-stats.sh countries /tmp/c-old.json /tmp/c-new.json 300 > /tmp/c-out.json \
+    && jq -e '.DE == 10 and .FR == 1 and .US == null and (has("1.2.3.4") | not)' /tmp/c-out.json >/dev/null \
+    && mkdir -p /tmp/statetest \
+    && printf '%s\n' '{"qps":1,"answers":10,"hits":2,"servfails":0,"slow":0,"lookups":4,"latency_ms_sum":40,"countries":{"DE":12,"1.2.3.4":9}}' > /tmp/render.json \
+    && DNS_MAGIC_STATS_STATE=/tmp/statetest /usr/local/bin/dns-magic-stats.sh render /tmp/render.json 1 \
+    && grep -q 'country="DE"' /tmp/statetest/metrics.prom \
+    && ! grep -q '1.2.3.4' /tmp/statetest/metrics.prom \
+    && rm -rf /tmp/c-old.json /tmp/c-new.json /tmp/c-out.json /tmp/render.json /tmp/statetest \
     && DOMAIN=build.invalid envsubst '$DOMAIN' < /opt/dns-magic/index.html.template > /var/www/dns-magic/index.html \
     && DOMAIN=build.invalid envsubst '$DOMAIN' < /opt/dns-magic/doh.mobileconfig.template > /var/www/dns-magic/doh.mobileconfig \
     && DOMAIN=build.invalid envsubst '$DOMAIN' < /opt/dns-magic/dot.mobileconfig.template > /var/www/dns-magic/dot.mobileconfig \

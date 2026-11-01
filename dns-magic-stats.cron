@@ -2,3 +2,4 @@ SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 * * * * * root /usr/local/bin/dns-magic-stats.sh >> /proc/1/fd/1 2>&1
+17 3 * * * root /usr/local/bin/dns-magic-geo.sh refresh >> /proc/1/fd/1 2>&1
