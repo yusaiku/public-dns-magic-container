@@ -51,7 +51,7 @@ RUN mkdir -p /etc/apt/keyrings \
 
 COPY unbound.conf /opt/dns-magic/unbound.conf
 COPY nginx.conf.template /opt/dns-magic/nginx.conf.template
-COPY index.html.template /opt/dns-magic/index.html.template
+COPY www/ /opt/dns-magic/www/
 COPY doh.mobileconfig.template dot.mobileconfig.template /opt/dns-magic/
 COPY unbound.conf /etc/unbound/unbound.conf
 COPY nginx.conf.template /etc/nginx/nginx.conf.template
@@ -118,14 +118,22 @@ RUN chmod 755 /entrypoint.sh /usr/local/bin/upgrade-packages.sh /usr/local/bin/s
     && grep -q 'country="DE"' /tmp/statetest/metrics.prom \
     && ! grep -q '1.2.3.4' /tmp/statetest/metrics.prom \
     && rm -rf /tmp/c-old.json /tmp/c-new.json /tmp/c-out.json /tmp/render.json /tmp/statetest \
-    && DOMAIN=build.invalid envsubst '$DOMAIN' < /opt/dns-magic/index.html.template > /var/www/dns-magic/index.html \
+    && DOMAIN=build.invalid DNS_MAGIC_WWW_SRC=/opt/dns-magic/www DNS_MAGIC_WWW_DEST=/var/www/dns-magic \
+        bash -c 'source /usr/local/bin/sync-storage.sh && render_guide_page' \
     && DOMAIN=build.invalid envsubst '$DOMAIN' < /opt/dns-magic/doh.mobileconfig.template > /var/www/dns-magic/doh.mobileconfig \
     && DOMAIN=build.invalid envsubst '$DOMAIN' < /opt/dns-magic/dot.mobileconfig.template > /var/www/dns-magic/dot.mobileconfig \
     && grep -q 'https://build.invalid/dns-query' /var/www/dns-magic/index.html \
+    && grep -q 'So richten Sie build.invalid ein' /var/www/dns-magic/index.html \
+    && grep -q 'https://build.invalid/dns-query' /var/www/dns-magic/assets/routes-*.js \
+    && ! grep -q '___DNS_MAGIC_DOMAIN___' /var/www/dns-magic/index.html /var/www/dns-magic/assets/*.js \
+    && ! grep -R -q "$(printf '%s.%s.%s' dns x1 to)" /opt/dns-magic/www \
+    && ! grep -q 'grok.com/grok-app-builder' /var/www/dns-magic/index.html \
+    && test -f /var/www/dns-magic/assets/styles-M5dm9alt.css \
+    && test -f /var/www/dns-magic/favicon.svg \
     && grep -q 'https://build.invalid/dns-query' /var/www/dns-magic/doh.mobileconfig \
     && grep -q '>build.invalid<' /var/www/dns-magic/dot.mobileconfig \
     && rm -f /etc/nginx/nginx.conf /etc/nginx/ssl/privkey.pem /etc/nginx/ssl/fullchain.cer \
-        /var/www/dns-magic/index.html /var/www/dns-magic/doh.mobileconfig /var/www/dns-magic/dot.mobileconfig
+    && rm -rf /var/www/dns-magic
 
 LABEL org.opencontainers.image.source="https://github.com/yusaiku/public-dns-magic-container" \
       org.opencontainers.image.description="Public DoH and DoT resolver for bunny.net Magic Containers"

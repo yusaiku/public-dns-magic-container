@@ -153,7 +153,7 @@ Der erste Start braucht ein paar Minuten. Im Log der App erscheinen nacheinander
 
 Wenn das Log „Let's Encrypt issued a certificate“ zeigt:
 
-1. `https://dns.example.com/` im Browser öffnen. Die Seite stellt sich als öffentlicher DNS-Resolver vor und nennt beide Adressen.
+1. `https://dns.example.com/` im Browser öffnen. Die Seite führt Schritt für Schritt durch die Einrichtung und nennt nur den Namen, keine IP-Adresse.
 2. DNS-over-TLS:
 
 ```bash

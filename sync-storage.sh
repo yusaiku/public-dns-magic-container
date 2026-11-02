@@ -507,14 +507,61 @@ render_public_file() {
     chmod 644 "$rendered"
 }
 
+# The finished guide is a static page plus its script and fonts. The files in
+# the image contain ___DNS_MAGIC_DOMAIN___ . sed replaces that token. envsubst
+# would also rewrite other ${...} sequences inside the minified script.
+DOMAIN_TOKEN='___DNS_MAGIC_DOMAIN___'
+
+render_domain_token() {
+    local template="$1" rendered="$2" tmp
+    tmp="$(mktemp)"
+    sed "s|${DOMAIN_TOKEN}|${DOMAIN}|g" "$template" >"$tmp"
+    if ! cmp -s "$tmp" "$rendered" 2>/dev/null; then
+        mkdir -p "$(dirname "$rendered")"
+        mv "$tmp" "$rendered"
+        log "rendered $(basename "$rendered") for ${DOMAIN}"
+    else
+        rm -f "$tmp"
+    fi
+    chmod 644 "$rendered"
+}
+
+install_public_file() {
+    local src="$1" dest="$2"
+    mkdir -p "$(dirname "$dest")"
+    if ! cmp -s "$src" "$dest" 2>/dev/null; then
+        cp "$src" "$dest"
+    fi
+    chmod 644 "$dest"
+}
+
+render_guide_page() {
+    local src="${DNS_MAGIC_WWW_SRC:-/opt/dns-magic/www}"
+    local dest="${DNS_MAGIC_WWW_DEST:-/var/www/dns-magic}"
+    local f base
+    mkdir -p "$dest/assets"
+    chmod 755 "$dest" "$dest/assets"
+    if [[ "$dest" == /var/www/dns-magic ]]; then
+        chmod 755 /var/www
+    fi
+    install_public_file "$src/favicon.svg" "$dest/favicon.svg"
+    for f in "$src"/assets/*; do
+        [[ -f "$f" ]] || continue
+        base="$(basename "$f")"
+        case "$base" in
+            *.js) render_domain_token "$f" "$dest/assets/$base" ;;
+            *) install_public_file "$f" "$dest/assets/$base" ;;
+        esac
+    done
+    render_domain_token "$src/index.html.template" "$dest/index.html"
+}
+
 render_info_page() {
-    mkdir -p /var/www/dns-magic
-    # The entrypoint uses umask 077 for the env file. Nginx workers run as
-    # www-data and must be able to read this page.
-    chmod 755 /var/www /var/www/dns-magic
-    render_public_file /opt/dns-magic/index.html.template /var/www/dns-magic/index.html
-    render_public_file /opt/dns-magic/doh.mobileconfig.template /var/www/dns-magic/doh.mobileconfig
-    render_public_file /opt/dns-magic/dot.mobileconfig.template /var/www/dns-magic/dot.mobileconfig
+    local dest="${DNS_MAGIC_WWW_DEST:-/var/www/dns-magic}"
+    # Nginx workers run as www-data and must be able to read this page.
+    render_guide_page
+    render_public_file /opt/dns-magic/doh.mobileconfig.template "$dest/doh.mobileconfig"
+    render_public_file /opt/dns-magic/dot.mobileconfig.template "$dest/dot.mobileconfig"
 }
 
 nginx_ok() {
