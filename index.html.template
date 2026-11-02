@@ -4,30 +4,30 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
-<meta name="description" content="${DOMAIN} ist ein zensurfreier öffentlicher DNS-Resolver über DNS-over-HTTPS und DNS-over-TLS. Die Seite zeigt die Einrichtung für diesen Namen.">
-<title>${DOMAIN} · zensurfreier DNS-Resolver</title>
+<meta name="description" content="Anleitung für den zensurfreien DNS-Resolver ${DOMAIN}. Android, iPhone, Windows, Mac, Linux, Browser und FRITZ!Box, ohne Vorkenntnisse.">
+<title>${DOMAIN} einrichten</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%231e4d3a'/%3E%3Ccircle cx='16' cy='16' r='6' fill='none' stroke='%23f4f1ea' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%23f4f1ea'/%3E%3C/svg%3E">
 <style>
 :root {
     color-scheme: light;
-    --paper: #f4f1ea;
-    --ink: #1a1814;
-    --muted: #5e584e;
-    --line: #d8d0c3;
+    --paper: #f3efe6;
+    --ink: #1c1915;
+    --muted: #5c564c;
+    --line: #ddd4c6;
     --green: #1e4d3a;
-    --card: #fbf9f4;
+    --card: #faf7f1;
 }
 * { box-sizing: border-box; }
-html { background: var(--paper); }
+html { background: var(--paper); scroll-behavior: smooth; }
 body {
     margin: 0;
     color: var(--ink);
     background:
         linear-gradient(var(--green), var(--green)) top / 100% 6px no-repeat,
         var(--paper);
-    font-family: Palatino, "Palatino Linotype", "Book Antiqua", Georgia, "Liberation Serif", serif;
-    font-size: 1.125rem;
-    line-height: 1.5;
+    font-family: system-ui, "Segoe UI", sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.55;
 }
 main {
     max-width: 46rem;
@@ -40,9 +40,6 @@ main {
     height: 2.25rem;
     margin-bottom: 1.75rem;
 }
-p.kicker, h2, .label, .where, .tabbar, .steps, footer, .choice small {
-    font-family: system-ui, "Segoe UI", sans-serif;
-}
 a { color: var(--green); overflow-wrap: anywhere; }
 p.kicker {
     margin: 0 0 0.75rem;
@@ -54,14 +51,16 @@ p.kicker {
 }
 h1 {
     margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
     font-size: clamp(2.1rem, 5vw, 3.25rem);
     font-weight: 500;
     letter-spacing: -0.03em;
     line-height: 1.05;
     overflow-wrap: anywhere;
 }
-.lead { max-width: 38rem; margin: 1.25rem 0 0; font-size: 1.2rem; }
-.en { margin: 0.4rem 0 0; color: var(--muted); font-size: 1rem; }
+.lead { max-width: 40rem; margin: 1.25rem 0 0; font-size: 1.15rem; }
+.howto { margin: 1.25rem 0 0; padding-left: 1.2rem; }
+.howto li { margin: 0.35rem 0; }
 .ends {
     display: grid;
     gap: 0.75rem;
@@ -105,11 +104,11 @@ code.inline {
 }
 h3 {
     margin: 2.75rem 0 0.25rem;
-    font-size: 1.45rem;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.7rem;
     font-weight: 500;
 }
-.panel h3 { margin: 1.6rem 0 0.35rem; font-size: 1.28rem; }
-.panel h3:first-child { margin-top: 0; }
+.panel h3 { margin: 0 0 0.35rem; font-size: 1.7rem; }
 .guide { margin-top: 1.15rem; }
 .guide > input {
     position: absolute;
@@ -185,13 +184,15 @@ ol.steps li::before {
     padding-top: 0.12rem;
 }
 .label { display: block; margin-bottom: 0.2rem; font-size: 0.95rem; font-weight: 650; }
-.steps li p, .panel > p { margin: 0.35rem 0 0; }
+.steps li p, .panel > p, .note p { margin: 0.35rem 0 0; }
+.note p:first-child { margin-top: 0; }
 .note {
     margin: 1rem 0 0;
     padding: 0.8rem 0.95rem;
     border-left: 3px solid var(--green);
     font-size: 1rem;
 }
+.note strong.note-title { display: block; margin-bottom: 0.2rem; }
 .choices {
     display: grid;
     gap: 0.75rem;
@@ -209,7 +210,6 @@ a.choice {
 a.choice strong {
     display: block;
     color: var(--green);
-    font-family: system-ui, "Segoe UI", sans-serif;
     font-size: 0.95rem;
 }
 a.choice small {
@@ -218,6 +218,18 @@ a.choice small {
     color: var(--muted);
     font-size: 0.85rem;
 }
+ul.checks { margin: 0.6rem 0 0; padding-left: 1.15rem; }
+ul.checks li { margin: 0.55rem 0; }
+details {
+    margin-top: 1rem;
+    border-top: 1px solid var(--line);
+    padding-top: 0.7rem;
+}
+summary {
+    cursor: pointer;
+    font-weight: 650;
+}
+details p { margin: 0.45rem 0 0; }
 footer {
     margin-top: 2.5rem;
     color: var(--muted);
@@ -230,6 +242,9 @@ footer {
     .tabbar { display: none; }
     .panel { display: block; padding-top: 1.5rem; border-top: 1px solid var(--line); }
 }
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+}
 </style>
 </head>
 <body>
@@ -241,25 +256,30 @@ footer {
 </svg>
 <p class="kicker">Zensurfreier DNS-Resolver</p>
 <h1>${DOMAIN}</h1>
-<p class="lead">Dieser Name beantwortet DNS-Anfragen über HTTPS und TLS, ohne Namen zu sperren. Die Seite selbst liefert keine DNS-Daten. Unten steht, wie du den Resolver auf deinem Gerät einträgst.</p>
-<p class="en">Public uncensored DNS resolver. The setup steps use this hostname. Queries are not logged.</p>
+<p class="lead">Diese Seite führt durch die Einrichtung, Gerät für Gerät. Sie brauchen keine Vorkenntnisse. Es gibt nur einen Namen und eine HTTPS-Adresse, keine Zahlen zum Abtippen.</p>
+<ol class="howto">
+<li>Oben die beiden Adressen ansehen. Android und die FRITZ!Box brauchen nur den Namen <code class="inline">${DOMAIN}</code>. Browser und das Apple-Profil brauchen <code class="inline">https://${DOMAIN}/dns-query</code>.</li>
+<li>Unten Ihr Gerät antippen und die nummerierten Schritte der Reihe nach ausführen. Wenn ein Menü anders heißt, steht der Weg des Herstellers zum Aufklappen darunter.</li>
+<li>Am Ende jeder Anleitung prüfen, ob die Einstellung wirklich gilt. Lädt danach keine Seite mehr, im selben Abschnitt auf „Rückgängig“ gehen. Dann ist alles wie vorher.</li>
+</ol>
 <section class="ends" aria-label="Adressen">
 <article class="card">
-<h2>DNS-over-HTTPS</h2>
+<h2>DNS über HTTPS</h2>
 <span class="code">https://${DOMAIN}/dns-query</span>
-<span class="where">Port 443 · Browser und Profile</span>
+<span class="where">Port 443 · Browser und Apple-Profil</span>
 </article>
 <article class="card">
-<h2>DNS-over-TLS</h2>
+<h2>DNS über TLS</h2>
 <span class="code">${DOMAIN}</span>
-<span class="where">Port 853 · Android, Apple und Router</span>
+<span class="where">Port 853 · Android und FRITZ!Box, ohne https://</span>
 </article>
 </section>
 <h3>Zensurfrei</h3>
 <p>Der Resolver fragt die Root-Server des DNS direkt und geht von dort zum zuständigen Nameserver. Er hängt nicht an Cloudflare, Google oder dem DNS eines Zugangsproviders und sperrt keine Namen.</p>
-<p>DNS-Abfragen werden nicht gespeichert und nicht protokolliert. Antworten werden mit DNSSEC geprüft. Das gilt für jeden, der den Resolver nutzt.</p>
+<p>DNS-Abfragen werden nicht gespeichert und nicht protokolliert. Antworten werden mit DNSSEC geprüft. Das gilt für jeden, der den Resolver nutzt. Die Seite selbst liefert keine DNS-Daten.</p>
+<p class="note"><strong class="note-title">Keine IP-Adresse eintragen</strong> Dieser Dienst antwortet nicht auf normales, unverschlüsseltes DNS. Port 53 gibt es hier nicht. Eine Zahl in ein gewöhnliches DNS-Feld legt die Namensauflösung lahm. Lassen Sie solche Felder, wie sie sind.</p>
 <h3>Einrichten</h3>
-<p>Überall gilt der Name <code class="inline">${DOMAIN}</code>. Unverschlüsseltes DNS auf Port 53 bietet dieser Resolver nicht an. Wo ein System eine IP-Adresse verlangt, nimm eine Adresse dieses Namens und dazu die verschlüsselte Adresse von oben.</p>
+<p>Tippen Sie das Gerät an, das den Namen benutzen soll. Nur der Browser ist der kürzeste Weg. Ein einzelnes Gerät gilt für Apps und Browser darauf. Die FRITZ!Box gilt für das Heimnetz.</p>
 <div class="guide">
 <input type="radio" name="setup" id="setup-android" checked>
 <input type="radio" name="setup" id="setup-apple">
@@ -274,37 +294,55 @@ footer {
 <label for="setup-windows">Windows</label>
 <label for="setup-browser">Browser</label>
 <label for="setup-linux">Linux</label>
-<label for="setup-router">Router</label>
+<label for="setup-router">FRITZ!Box</label>
 <label for="setup-forward">Weiterleiten</label>
 </div>
 <section class="panel" id="panel-android">
-<h3>Android und GrapheneOS</h3>
-<p>Ab Android 9, einschließlich GrapheneOS. Der Name reicht, eine IP-Adresse brauchst du nicht.</p>
+<p class="kicker">Ganzes Gerät · etwa 2 Minuten</p>
+<h3>Android</h3>
+<p>Gilt ab Android 9. Dazu gehören Samsung, Xiaomi, Redmi, POCO, Huawei, Google Pixel, Fairphone, OnePlus und GrapheneOS. Sie brauchen keine Zahlen, nur den Namen. Android prüft beim Speichern, ob der Dienst antwortet.</p>
+<p class="note"><strong class="note-title">Genau so eintragen, ohne https://</strong> <code class="inline">${DOMAIN}</code></p>
 <ol class="steps">
 <li>
 <div>
-<span class="label">Privates DNS öffnen</span>
-<p>Einstellungen, dann Netzwerk und Internet. Auf Samsung-Geräten oft Verbindungen, Weitere Verbindungseinstellungen.</p>
+<span class="label">Einstellungen öffnen</span>
+<p>Das Zahnrad. Es liegt meist auf dem Startbildschirm oder in der Schnellleiste, die Sie von oben herunterziehen.</p>
 </div>
 </li>
 <li>
 <div>
-<span class="label">Hostname wählen</span>
-<p>Privates DNS, dann Hostname des privaten DNS-Anbieters.</p>
+<span class="label">Oben in die Suche tippen</span>
+<p>Tippen Sie <strong>Privates DNS</strong> ein. Öffnen Sie das Ergebnis mit genau diesem Namen. Die Suche umgeht die unterschiedlichen Menüs der Hersteller.</p>
+</div>
+</li>
+<li>
+<div>
+<span class="label">Hostname auswählen</span>
+<p>Wählen Sie <strong>Hostname des privaten DNS-Anbieters</strong>. Nicht „Automatisch“ und nicht „Aus“.</p>
 </div>
 </li>
 <li>
 <div>
 <span class="label">Namen speichern</span>
-<p>Trag <code class="inline">${DOMAIN}</code> ein und speichere. Android spricht damit DNS-over-TLS auf Port 853.</p>
+<p>Löschen Sie einen eventuell vorhandenen Text. Tragen Sie nur <code class="inline">${DOMAIN}</code> ein. Kein https://, kein Leerzeichen, kein Punkt am Ende. Tippen Sie auf <strong>Speichern</strong>.</p>
 </div>
 </li>
 </ol>
-<p class="note">Android merkt sich die aufgelöste Adresse. Nach einem Wechsel des Servers einmal Flugmodus an und aus. Ältere Android-Versionen ohne Privates DNS stellst du im Browser ein.</p>
+<p class="note"><strong class="note-title">Geschafft, wenn</strong> Unter Privates DNS der Name <code class="inline">${DOMAIN}</code> steht und Speichern ohne Fehlermeldung durchging. Danach gilt das für WLAN und Mobilfunk, in jedem Browser und in den Apps. Eine extra Einstellung im Browser brauchen Sie nicht. Speichern scheitert, wenn der Name falsch ist oder das Netz Port 853 sperrt.</p>
+<p class="note"><strong class="note-title">Rückgängig</strong> Privates DNS wieder auf <strong>Automatisch</strong> stellen. Danach ist es wie vorher.</p>
+<details>
+<summary>Die Suche findet „Privates DNS“ nicht</summary>
+<p><strong>Pixel, Fairphone, Android pur, GrapheneOS.</strong> Einstellungen, Netzwerk und Internet, Privates DNS.</p>
+<p><strong>Samsung.</strong> Einstellungen, Verbindungen, Weitere Verbindungseinstellungen, Privates DNS.</p>
+<p><strong>Xiaomi, Redmi, POCO.</strong> Einstellungen, Verbindung und Teilen, Privates DNS. Auf manchen Geräten erst Weitere Einstellungen.</p>
+<p><strong>Huawei.</strong> Einstellungen, Mobilfunknetz, Privates DNS.</p>
+<p>Ältere Android-Versionen ohne Privates DNS stellen Sie im Reiter Browser ein. Die gilt dann nur für diesen Browser.</p>
+</details>
 </section>
 <section class="panel" id="panel-apple">
+<p class="kicker">Ganzes Gerät · Profil in Safari</p>
 <h3>iPhone, iPad und Mac</h3>
-<p>Ein Profil schaltet verschlüsseltes DNS für das ganze System ein. DNS über HTTPS passt für die meisten.</p>
+<p>Ein Profil schaltet verschlüsseltes DNS für das ganze System ein. DNS über HTTPS passt für die meisten. Öffnen Sie diese Seite in <strong>Safari</strong>. Chrome und andere Browser auf dem iPhone laden das Profil nicht an die richtige Stelle.</p>
 <div class="choices">
 <a class="choice" href="doh.mobileconfig"><strong>DNS über HTTPS laden</strong><small>Empfohlen · Port 443</small></a>
 <a class="choice" href="dot.mobileconfig"><strong>DNS über TLS laden</strong><small>Alternative · Port 853</small></a>
@@ -313,64 +351,50 @@ footer {
 <li>
 <div>
 <span class="label">Profil laden</span>
-<p>Tippe oben auf eine der beiden Dateien. Es ist jeweils nur eine nötig.</p>
+<p>Tippen Sie oben auf eine der beiden Dateien. Es ist jeweils nur eine nötig. Das Profil enthält nur den Namen <code class="inline">${DOMAIN}</code>.</p>
 </div>
 </li>
 <li>
 <div>
-<span class="label">Installieren</span>
-<p>Auf dem iPhone erscheint oben in den Einstellungen „Profil geladen“. Dort installieren und bestätigen. Liegt der Hinweis woanders: Allgemein, VPN und Geräteverwaltung. Am Mac die geladene Datei öffnen und unter Systemeinstellungen, Datenschutz und Sicherheit, Profile, installieren.</p>
+<span class="label">Auf dem iPhone oder iPad installieren</span>
+<p>Oben in den Einstellungen erscheint „Profil geladen“. Dort installieren und mit dem Gerätecode bestätigen. Liegt der Hinweis woanders: Einstellungen, Allgemein, VPN und Geräteverwaltung.</p>
+</div>
+</li>
+<li>
+<div>
+<span class="label">Auf dem Mac installieren</span>
+<p>Die geladene Datei öffnen. Dann Systemeinstellungen, Datenschutz und Sicherheit, Profile, und dort installieren.</p>
 </div>
 </li>
 </ol>
-<p class="note">iOS warnt rot vor einem unsignierten Profil. Das Profil stammt von diesem Resolver und enthält nur den Namen ${DOMAIN}. Entfernen geht an derselben Stelle in den Einstellungen.</p>
+<p class="note"><strong class="note-title">Die rote Meldung ist normal</strong> Apple warnt, das Profil sei nicht signiert. Es stammt von diesem Resolver und enthält nur den Namen. Entfernen geht an derselben Stelle in den Einstellungen, Profil löschen.</p>
+<p class="note"><strong class="note-title">Geschafft, wenn</strong> Unter VPN und Geräteverwaltung ein Profil für <code class="inline">${DOMAIN}</code> steht. Es gilt in jedem Netz, auch im Mobilfunk, und für Apps. Ein VPN kann die Einstellung danach wieder überschreiben.</p>
 </section>
 <section class="panel" id="panel-windows">
-<h3>Windows 11</h3>
-<p>Windows verlangt die IP-Adressen des Namens und zusätzlich die DoH-Vorlage. Die Adressen zeigt <code class="inline">nslookup ${DOMAIN}</code>. Gibt es nur eine, bleibt das zweite Feld leer. IPv6 nur eintragen, wenn der Name eine AAAA-Adresse hat.</p>
-<ol class="steps">
-<li>
-<div>
-<span class="label">Netzwerk öffnen</span>
-<p>Einstellungen, Netzwerk und Internet, WLAN oder Ethernet. Die verbundene Verbindung öffnen, dann Hardwareeigenschaften.</p>
-</div>
-</li>
-<li>
-<div>
-<span class="label">DNS auf manuell stellen</span>
-<p>Neben DNS-Serverzuweisung auf Bearbeiten. Manuell wählen und IPv4 einschalten.</p>
-</div>
-</li>
-<li>
-<div>
-<span class="label">Adressen und Vorlage eintragen</span>
-<p>Bevorzugter DNS und, falls vorhanden, alternativer DNS: die Adressen von <code class="inline">${DOMAIN}</code>. Bei beiden DNS über HTTPS auf Ein (manuelle Vorlage) stellen und diese Vorlage eintragen:</p>
-<pre class="code">https://${DOMAIN}/dns-query</pre>
-</div>
-</li>
-<li>
-<div>
-<span class="label">Klartext aus lassen</span>
-<p>Fallback auf Klartext bleibt aus. Port 53 antwortet hier nicht. Danach speichern.</p>
-</div>
-</li>
-</ol>
-<p class="note">Windows 10 kann System-DNS nicht verschlüsseln. Dafür den Browser nehmen, oder auf Windows 11 wechseln.</p>
+<p class="kicker">Nur der Browser · Windows 10 und 11</p>
+<h3>Windows</h3>
+<p>Windows kann verschlüsseltes DNS für das ganze System nur zusammen mit IP-Adressen einstellen. Diesen Anschluss bietet der Resolver nicht an. Tragen Sie in den Windows-Netzwerkeinstellungen <strong>keine Zahl</strong> ein und lassen Sie „DNS-Serverzuweisung“ auf Automatisch.</p>
+<p>Die Einrichtung läuft über den Browser. Der Reiter <strong>Browser</strong> gilt für Firefox, Chrome, Edge und Brave. Zuerst mit <code class="inline">winver</code> zu prüfen, welche Windows-Version installiert ist, brauchen Sie dafür nicht.</p>
+<p class="note"><strong class="note-title">Was damit gilt</strong> Nur der Browser, den Sie umgestellt haben. Andere Programme und ein zweiter Browser fragen weiter den DNS des Anbieters oder der FRITZ!Box. Für das ganze Gerät nehmen Sie, wenn vorhanden, die FRITZ!Box.</p>
+<p class="note"><strong class="note-title">Rückgängig</strong> Im Browser „Sicheres DNS“ beziehungsweise „DNS über HTTPS“ wieder ausschalten.</p>
 </section>
 <section class="panel" id="panel-browser">
+<p class="kicker">Der kürzeste Weg · etwa 2 Minuten</p>
+<h3>Nur der Browser</h3>
+<p>Dieser Weg gilt für Firefox, Chrome, Edge und Brave auf Windows, Linux und Mac. Andere Programme auf dem Gerät bleiben unverändert.</p>
+<p class="note"><strong class="note-title">Diese Adresse eintragen</strong> <code class="inline">https://${DOMAIN}/dns-query</code></p>
 <h3>Firefox</h3>
 <ol class="steps">
 <li>
 <div>
 <span class="label">Netzwerk öffnen</span>
-<p><code class="inline">about:preferences#general</code> öffnen, nach unten zu Netzwerkeinstellungen, dann Einstellungen.</p>
+<p><code class="inline">about:preferences#general</code> in die Adresszeile schreiben, nach unten zu Netzwerkeinstellungen, dann Einstellungen.</p>
 </div>
 </li>
 <li>
 <div>
 <span class="label">Eigenen Anbieter eintragen</span>
-<p>DNS über HTTPS aktivieren, Maximaler Schutz, Anbieter Benutzerdefiniert, und die DoH-Adresse eintragen:</p>
-<pre class="code">https://${DOMAIN}/dns-query</pre>
+<p>DNS über HTTPS aktivieren, Maximaler Schutz, Anbieter Benutzerdefiniert, und die Adresse von oben eintragen.</p>
 </div>
 </li>
 </ol>
@@ -379,83 +403,116 @@ footer {
 <li>
 <div>
 <span class="label">Sicherheit öffnen</span>
-<p>Einstellungen, Datenschutz und Sicherheit, Sicherheit.</p>
+<p>Einstellungen, Datenschutz und Sicherheit, Sicherheit. In der Suche der Einstellungen finden Sie es unter „Sicheres DNS“.</p>
 </div>
 </li>
 <li>
 <div>
 <span class="label">Sicheres DNS eintragen</span>
-<p>Sicheres DNS verwenden, dann Mit Benutzerdefiniert, und dieselbe DoH-Adresse eintragen.</p>
+<p>Sicheres DNS verwenden, dann Mit Benutzerdefiniert, und dieselbe Adresse eintragen.</p>
 </div>
 </li>
 </ol>
-<p class="note">Der Browser verschlüsselt dann seine eigenen Anfragen. Andere Programme auf dem Gerät nutzen weiter das DNS des Systems, bis du Android, Apple, Windows oder Linux wie oben einstellst.</p>
+<p class="note"><strong class="note-title">Geschafft, wenn</strong> Die Prüfung weiter unten in genau diesem Browser den Namen <code class="inline">${DOMAIN}</code> zeigt. Ein privates Fenster ist sicherer, damit keine alte Antwort aus dem Zwischenspeicher stört.</p>
+<p class="note"><strong class="note-title">Rückgängig</strong> Dieselbe Seite in den Einstellungen wieder auf den Standardanbieter stellen oder Sicheres DNS ausschalten.</p>
 </section>
 <section class="panel" id="panel-linux">
-<h3>systemd-resolved</h3>
-<p>Die grafische Netzwerkeinstellung trägt unverschlüsseltes DNS ein. Das erreicht diesen Resolver nicht. Trag in <code class="inline">/etc/systemd/resolved.conf</code> jede Adresse von <code class="inline">${DOMAIN}</code> ein. <code class="inline">203.0.113.10</code> ist nur ein Platzhalter, eine eigene Zeile pro Adresse:</p>
-<pre class="code">[Resolve]
-DNS=203.0.113.10#${DOMAIN}
-DNSOverTLS=yes</pre>
-<p>Die Adressen liefert <code class="inline">dig +short ${DOMAIN} A</code>. Danach <code class="inline">sudo systemctl restart systemd-resolved</code>.</p>
-<h3>NetworkManager</h3>
-<p>Dieselbe Adresse, mit dem TLS-Namen hinter der Raute. <code class="inline">VERBINDUNG</code> ist der Name aus <code class="inline">nmcli connection show</code>.</p>
-<pre class="code">nmcli connection modify "VERBINDUNG" \
-  ipv4.dns "203.0.113.10#${DOMAIN}" \
-  ipv4.ignore-auto-dns yes \
-  connection.dns-over-tls yes
-nmcli connection up "VERBINDUNG"</pre>
-<p class="note">DNS über TLS wirkt hier nur, wenn NetworkManager systemd-resolved als DNS-Plugin nutzt. Sonst bleiben die Anfragen unverschlüsselt oder schlagen fehl. Im Zweifel den Browser nehmen.</p>
+<p class="kicker">Name, nicht das Zahlenfeld</p>
+<h3>Linux</h3>
+<p>Die grafische Netzwerkeinstellung und die Zeile für DNS-Server tragen unverschlüsseltes DNS ein. Das erreicht diesen Resolver nicht. Lassen Sie diese Felder leer. Schreiben Sie dort keine Zahl hinein.</p>
+<p>Der zuverlässige Weg ohne Zahlen ist der Reiter <strong>Browser</strong>. Er gilt für Firefox, Chrome und Brave auf diesem Linux.</p>
+<p>Wer den Namen für das ganze System will, nimmt Unbound oder AdGuard Home aus dem Reiter <strong>Weiterleiten</strong>. Beide verstehen den Namen. systemd-resolved und NetworkManager wollen für DNS über TLS eine IP-Adresse. Die tragen Sie hier nicht ein.</p>
+<p class="note"><strong class="note-title">Rückgängig</strong> Die Browsereinstellung zurücksetzen. Haben Sie Unbound oder AdGuard ergänzt, die dort hinzugefügte Zeile wieder löschen und den Dienst neu starten.</p>
 </section>
 <section class="panel" id="panel-router">
+<p class="kicker">Ganzes Heimnetz · etwa 5 Minuten · FRITZ!OS 7.20 oder neuer</p>
 <h3>FRITZ!Box</h3>
-<p>Ab FRITZ!OS 7.20. Unten rechts die erweiterte Ansicht einschalten, falls der Reiter fehlt. Die Box verbindet sich mit den Adressen auf Port 853 und prüft das Zertifikat gegen den Namen.</p>
+<p>Die DNS-Server Ihres Internetanbieters bleiben eingetragen. Weiter unten auf derselben Seite schalten Sie die verschlüsselte Auflösung ein und schreiben nur den Namen <code class="inline">${DOMAIN}</code> hinein. Eine IP-Adresse kommt nirgends hin.</p>
+<p class="note"><strong class="note-title">Nur dieser Name, eine Zeile, ohne https://</strong> <code class="inline">${DOMAIN}</code></p>
 <ol class="steps">
 <li>
 <div>
-<span class="label">DNS-Server öffnen</span>
-<p><a href="http://fritz.box">http://fritz.box</a>, dann Internet, Zugangsdaten, DNS-Server.</p>
+<span class="label">Die Oberfläche öffnen</span>
+<p>Verbinden Sie das Gerät mit dem WLAN der Box oder mit einem Kabel. In die Adresszeile des Browsers, nicht ins Suchfeld: <a href="http://fritz.box">http://fritz.box</a>. Das Kennwort steht auf dem Aufkleber an der Unterseite, sofern Sie es nicht selbst geändert haben. Es ist nicht automatisch das WLAN-Kennwort.</p>
 </div>
 </li>
 <li>
 <div>
-<span class="label">Adressen eintragen</span>
-<p>Andere DNSv4-Server verwenden. Bevorzugt und, falls vorhanden, alternativ: die Adressen von <code class="inline">${DOMAIN}</code>. Eine IPv6-Adresse nur eintragen, wenn der Name eine hat. Sonst die vom Anbieter verteilten DNSv6-Server abschalten, damit Anfragen nicht daran vorbeigehen.</p>
+<span class="label">Erweiterte Ansicht einschalten</span>
+<p>Fehlt später der Reiter DNS-Server, ist die Ansicht noch auf Standard. Unten links auf <strong>Erweitert</strong>, oder oben das Menü mit drei Punkten und dort die erweiterte Ansicht. Die Seite lädt neu. Das Internet bleibt dabei an.</p>
 </div>
 </li>
 <li>
 <div>
-<span class="label">DNS over TLS</span>
-<p>Verschlüsselte Namensauflösung im Internet einschalten. Zertifikatsprüfung an, Fallback auf unverschlüsselte Auflösung aus. Bei den aufgelösten Namen <code class="inline">${DOMAIN}</code> eintragen, einmal pro Adresse. Übernehmen.</p>
+<span class="label">Zum Reiter DNS-Server</span>
+<p>Internet, Zugangsdaten, Reiter DNS-Server. Bei manchen Kabel-Anschlüssen heißt der Menüpunkt Zugangsart statt Zugangsdaten. Der Reiter DNS-Server ist derselbe.</p>
+</div>
+</li>
+<li>
+<div>
+<span class="label">Die DNS-Server des Anbieters lassen</span>
+<p>Oben bleibt es bei den Servern des Internetanbieters. Den Haken <strong>Andere DNSv4-Server verwenden</strong> setzen Sie nicht. Dasselbe bei IPv6: <strong>Andere DNSv6-Server verwenden</strong> bleibt aus. In kein Zahlenfeld etwas schreiben und nichts löschen, was die Box dort schon stehen hat.</p>
+</div>
+</li>
+<li>
+<div>
+<span class="label">Weiter unten DNS über TLS einschalten</span>
+<p>Auf derselben Seite nach unten, zum Bereich der verschlüsselten Auflösung. Diese Option einschalten: <strong>Verschlüsselte Namensauflösung im Internet (DNS over TLS)</strong>. Steht daneben eine Zertifikatsprüfung, bleibt ihr Haken gesetzt. Den Haken bei <strong>Fallback auf unverschlüsselte Namensauflösung</strong> lassen Sie aus.</p>
+</div>
+</li>
+<li>
+<div>
+<span class="label">Nur den Namen eintragen</span>
+<p>Unter <strong>Auflösungsnamen der DNS-Server</strong> steht ein Textfeld. Löschen Sie, was dort schon steht. Eine einzige Zeile: <code class="inline">${DOMAIN}</code>. Keine zweite Zeile, kein https://, keine Zahl.</p>
+</div>
+</li>
+<li>
+<div>
+<span class="label">Übernehmen</span>
+<p>Unten auf Übernehmen. Die Box speichert und verbindet sich neu. Das dauert meist unter einer Minute. Danach eine beliebige Seite laden.</p>
 </div>
 </li>
 </ol>
+<p class="note"><strong class="note-title">Was danach im Heimnetz gilt</strong> Ein einziges Mal muss die Box den Namen <code class="inline">${DOMAIN}</code> selbst nachschlagen. Diese erste Anfrage geht unverschlüsselt über Port 53 an den DNS-Server Ihres Anbieters. Später höchstens die Erneuerung dieses einen Namens. Sobald die Box die Adresse kennt, fragt sie für alle weiteren Namen verschlüsselt bei <code class="inline">${DOMAIN}</code> nach, über DNS über TLS auf Port 853. Das gilt für jedes Gerät im Heimnetz, das die FRITZ!Box als DNS benutzt: Computer, Fernseher, Konsolen, Drucker und Handys ohne eigene DNS-Einstellung. Ein Handy mit „Privates DNS“ oder ein Apple-Profil behält seine eigene Einstellung.</p>
+<p class="note"><strong class="note-title">Rückgängig</strong> Dieselbe Seite öffnen, „Verschlüsselte Namensauflösung im Internet“ ausschalten und Übernehmen. Die Server des Anbieters waren nie verändert.</p>
+</section>
+<section class="panel" id="panel-forward">
+<p class="kicker">Andere Boxen und eigene Resolver</p>
+<h3>Wenn es keine FRITZ!Box ist</h3>
+<p>Speedport, Vodafone Station und die meisten anderen Router haben kein Feld für DNS über TLS und keines für eine HTTPS-Adresse. Die Zahlenfelder auf Port 53 lassen Sie leer. Stellen Sie stattdessen jedes Gerät einzeln ein, über Android, Apple oder den Browser.</p>
+<h3>AdGuard Home</h3>
+<p>Einstellungen, DNS-Einstellungen, Upstream-DNS-Server. Eine Zeile reicht, beide gehen zum selben Resolver. Die DNS-Felder für normale Adressen bleiben leer:</p>
+<pre class="code">tls://${DOMAIN}
+https://${DOMAIN}/dns-query</pre>
+<h3>Unbound</h3>
+<p>Unbound löst den Namen einmal selbst auf und spricht danach DNS über TLS. Dafür braucht die Konfiguration <code class="inline">tls-cert-bundle</code> mit den System-Zertifikaten.</p>
+<pre class="code">forward-zone:
+    name: "."
+    forward-tls-upstream: yes
+    forward-host: ${DOMAIN}@853#${DOMAIN}</pre>
+<h3>Pi-hole</h3>
+<p>Die DNS-Felder von Pi-hole erwarten unverschlüsseltes DNS auf Port 53. Dieser Resolver nimmt das nicht an. AdGuard Home oder Unbound davor setzen und dort die Zeilen von oben eintragen. Die Zahlenfelder von Pi-hole nicht mit einer Adresse dieses Namens füllen.</p>
 <h3>MikroTik</h3>
 <p>RouterOS löst den Namen in der DoH-Adresse einmal über die bisher eingetragenen DNS-Server auf. Danach gehen die Anfragen an diese Adresse. Schlägt die Zertifikatsprüfung fehl, das ISRG-Root von Let's Encrypt importieren.</p>
 <pre class="code">/ip dns set use-doh-server=https://${DOMAIN}/dns-query verify-doh-cert=yes</pre>
 <h3>OpenWrt</h3>
 <p>Das Paket https-dns-proxy installieren und als URL die DoH-Adresse dieses Resolvers eintragen. Eine Weiterleitung auf Port 53 erreicht ihn nicht.</p>
 </section>
-<section class="panel" id="panel-forward">
-<h3>AdGuard Home</h3>
-<p>Einstellungen, DNS-Einstellungen, Upstream-DNS-Server. Eine Zeile reicht, beide gehen zum selben Resolver:</p>
-<pre class="code">tls://${DOMAIN}
-https://${DOMAIN}/dns-query</pre>
-<h3>Unbound</h3>
-<p><code class="inline">203.0.113.10</code> durch eine Adresse von <code class="inline">${DOMAIN}</code> ersetzen. Jede weitere Adresse bekommt eine eigene <code class="inline">forward-addr</code>-Zeile.</p>
-<pre class="code">forward-zone:
-    name: "."
-    forward-tls-upstream: yes
-    forward-addr: 203.0.113.10@853#${DOMAIN}</pre>
-<h3>Pi-hole</h3>
-<p>Die DNS-Felder von Pi-hole erwarten unverschlüsseltes DNS auf Port 53. Dieser Resolver nimmt das nicht an. AdGuard Home oder Unbound davor setzen und dort die Zeilen von oben eintragen.</p>
-</section>
 </div>
-<h3>Prüfen</h3>
-<p>DNS über TLS, mit gesetztem AD-Bit bei einem signierten Namen:</p>
+<h3>Live prüfen, wer antwortet</h3>
+<p>Öffnen Sie eine der Seiten in dem Browser, den Sie gerade umgestellt haben. Ein privates Fenster ist sicherer, damit keine alte Antwort aus dem Zwischenspeicher stört. Die Seiten sind auf Englisch. Jede löst extra erfundene Namen auf und zeigt, wer danach gefragt hat. Das ist der Test für diesen Browser, nicht eine Rangliste.</p>
+<ul class="checks">
+<li><a href="https://dnscheck.tools/">dnscheck.tools</a> startet von allein. Die Server stehen unter „DNS resolvers“.</li>
+<li><a href="https://www.dnsleaktest.com/">dnsleaktest.com</a>: auf „Standard test“ klicken. „Extended test“ fragt dasselbe ausführlicher.</li>
+<li><a href="https://browserleaks.com/dns">browserleaks.com/dns</a>: die Liste erscheint unter dem DNS-Test, sobald die Abfragen durch sind.</li>
+</ul>
+<p>Steht in der Liste der Name <strong>${DOMAIN}</strong>, nutzt dieser Browser den Dienst. Steht dort der Name Ihres Internetanbieters, etwa Telekom, Vodafone, O2 oder 1&amp;1, ist die Umstellung in diesem Browser noch nicht aktiv. Eine Zahl ohne Namen daneben ist kein Fehler. Entscheidend ist, dass nicht mehr nur der Anbieter in der Liste steht.</p>
+<p>Der Test gilt nur für den Browser, in dem Sie ihn öffnen. Ein zweiter Browser oder eine App kann weiter den Anbieter fragen. Nach der Einrichtung der FRITZ!Box muss der Name des Anbieters auf einem Gerät verschwinden, das die Box als DNS benutzt und kein eigenes privates DNS hat.</p>
+<p class="note"><strong class="note-title">Keine Prüfung für Ihr Gerät</strong> <a href="https://yusaiku.github.io/dns-tester-eu/">Diese Übersicht</a> listet freie DNS-Anbieter in Europa und misst deren Geschwindigkeit über DNS über HTTPS (DoH). Das ist eine Statistik. Sie zeigt nicht, ob Ihr Browser, Ihr Handy oder die FRITZ!Box <code class="inline">${DOMAIN}</code> benutzt.</p>
+<p>Wer ein Terminal hat, kann den Resolver selbst fragen. Das prüft den Dienst, nicht die Einstellung des Geräts:</p>
 <pre class="code">dig @${DOMAIN} -p 853 +tls example.com</pre>
-<p>Einen DoH-DNS-Test kann man hier durchführen:</p>
-<p class="code"><a href="https://yusaiku.github.io/dns-tester-eu/">https://yusaiku.github.io/dns-tester-eu/</a></p>
+<h3>Sieht mein Anbieter dann gar nichts mehr?</h3>
+<p>Doch. Weg sind nur die Namen in den DNS-Anfragen, und auch nur, wenn wirklich alle Anfragen über <code class="inline">${DOMAIN}</code> laufen. Welche Seite Sie danach öffnen, sieht der Anbieter meist trotzdem: die Adresse des Servers immer, und bei den meisten Seiten auch den Namen, weil der beim Verbindungsaufbau noch unverschlüsselt mitgeht. Der Inhalt der Seite bleibt verschlüsselt. Außerdem sieht er, dass Ihr Gerät mit <code class="inline">${DOMAIN}</code> spricht. Das ist keine Anonymität und kein VPN.</p>
 <footer>Zensurfrei. Direkt an die Root-Server. Keine Abfrage-Logs.</footer>
 </main>
 </body>
